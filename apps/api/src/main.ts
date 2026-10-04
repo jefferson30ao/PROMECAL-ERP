@@ -23,8 +23,10 @@ async function bootstrap() {
   if (staticPath) {
     app.useStaticAssets(staticPath);
     const expressApp = app.getHttpAdapter().getInstance();
-    expressApp.get("*", (req: any, res: any, next: any) => {
-      if (req.path.startsWith("/api")) return next();
+    expressApp.use((req: any, res: any, next: any) => {
+      if (req.method !== "GET" || req.path.startsWith("/api")) {
+        return next();
+      }
       res.sendFile(join(staticPath, "index.html"));
     });
   }
