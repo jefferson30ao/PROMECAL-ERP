@@ -1,0 +1,93 @@
+import type { Resource } from "../types";
+import { f, client, order, amount, date, detail, magnitude } from "../fields";
+export const operacionesResources: Resource[] = [
+  {
+    key: "orders",
+    module: "operaciones",
+    title: "Órdenes de servicio y trabajo",
+    singular: "orden",
+    prefix: "OS",
+    description: "Visibilidad del servicio de principio a fin.",
+    columns: ["name", "clientId", "service", "technicianId", "due", "status"],
+    states: [
+      "Pendiente",
+      "Programada",
+      "En proceso",
+      "En revisión",
+      "Liberada",
+      "Despachada",
+    ],
+    fields: [
+      f("name", "Descripción del servicio"),
+      client,
+      f("equipmentId", "Equipo", "select", { ref: "equipment" }),
+      f("service", "Servicio", "select", {
+        options: ["Calibración", "Soporte técnico"],
+      }),
+      magnitude,
+      f("priority", "Prioridad", "select", {
+        options: ["Normal", "Alta", "Urgente"],
+      }),
+      f("date", "Fecha de ingreso", "date"),
+      f("due", "Entrega prevista", "date"),
+      amount,
+      detail,
+    ],
+  },
+  {
+    key: "diagnoses",
+    module: "operaciones",
+    title: "Diagnósticos",
+    singular: "diagnóstico",
+    prefix: "DIA",
+    description:
+      "Evaluación técnica con costo, previa a la proforma de reparación.",
+    columns: ["name", "orderId", "amount", "decision", "status"],
+    states: ["Pendiente", "Reparable", "Irreparable"],
+    fields: [
+      f("name", "Hallazgo principal"),
+      order,
+      f("findings", "Problemas encontrados", "textarea"),
+      f("recommendation", "Recomendaciones", "textarea"),
+      f("decision", "Decisión del cliente", "select", {
+        options: ["Pendiente", "Aceptado", "Rechazado"],
+      }),
+      amount,
+      detail,
+    ],
+  },
+  {
+    key: "results",
+    module: "operaciones",
+    title: "Resultados y notas técnicas",
+    singular: "resultado",
+    prefix: "RES",
+    description: "Captura de lecturas y notas con referencias trazables.",
+    columns: ["name", "orderId", "reference", "reading", "error", "status"],
+    states: ["Borrador", "Registrado"],
+    fields: [
+      f("name", "Punto de medición / intervención"),
+      order,
+      f("reference", "Valor de referencia", "number"),
+      f("reading", "Lectura del instrumento", "number"),
+      f("unit", "Unidad"),
+      f("notes", "Notas de calibración / soporte", "textarea"),
+    ],
+  },
+  {
+    key: "certificates",
+    module: "operaciones",
+    title: "Certificados e informes",
+    singular: "documento de servicio",
+    prefix: "DOC",
+    description: "Entregables liberados desde el expediente de la orden.",
+    columns: ["name", "orderId", "date", "reviewer", "status"],
+    readonly: true,
+    fields: [
+      f("name", "Tipo de documento"),
+      order,
+      date,
+      f("reviewer", "Revisado por"),
+    ],
+  },
+];

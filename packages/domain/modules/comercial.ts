@@ -1,0 +1,163 @@
+import type { Resource } from "../types";
+import { f, client, order, amount, date, detail, magnitude } from "../fields";
+export const comercialResources: Resource[] = [
+  {
+    key: "clients",
+    module: "comercial",
+    title: "Clientes",
+    singular: "cliente",
+    prefix: "CLI",
+    description: "Un solo registro para toda la relación con tus clientes.",
+    columns: ["name", "document", "sector", "payment", "status"],
+    states: ["Activo", "Inactivo"],
+    fields: [
+      f("name", "Razón social / nombre"),
+      f("documentType", "Tipo de documento", "select", {
+        options: ["RUC", "DNI"],
+      }),
+      f("document", "N.º de documento"),
+      f("contact", "Persona de contacto"),
+      f("email", "Correo", "email"),
+      f("phone", "Teléfono"),
+      f("sector", "Sector", "select", {
+        options: [
+          "Minería",
+          "Pesca",
+          "Textil",
+          "Petroquímica",
+          "Construcción",
+          "Laboratorio",
+          "Otros",
+        ],
+      }),
+      f("payment", "Condición de pago", "select", {
+        options: ["Contado", "Crédito"],
+      }),
+      f("creditLimit", "Línea de crédito (S/)", "number"),
+      f("address", "Dirección"),
+      detail,
+    ],
+  },
+  {
+    key: "requests",
+    module: "comercial",
+    title: "Solicitudes",
+    singular: "solicitud",
+    prefix: "SOL",
+    description: "Centraliza la atención presencial, telefónica y digital.",
+    columns: ["name", "clientId", "service", "channel", "status"],
+    states: ["Nueva", "En evaluación", "Atendida"],
+    fields: [
+      f("name", "Asunto"),
+      client,
+      f("service", "Servicio", "select", {
+        options: ["Calibración", "Soporte técnico", "Garantía"],
+      }),
+      f("channel", "Canal", "select", {
+        options: ["Correo electrónico", "Teléfono", "Presencial"],
+      }),
+      date,
+      detail,
+    ],
+  },
+  {
+    key: "quotes",
+    module: "comercial",
+    title: "Proformas",
+    singular: "proforma",
+    prefix: "PRO",
+    description: "Alcance, plazos y condiciones comerciales del servicio.",
+    columns: ["name", "clientId", "service", "amount", "status"],
+    states: ["Borrador", "Enviada", "Aceptada", "Rechazada"],
+    fields: [
+      f("name", "Descripción del servicio"),
+      client,
+      f("service", "Servicio", "select", {
+        options: ["Calibración", "Soporte técnico", "Solo diagnóstico"],
+      }),
+      f("orderId", "OT de diagnóstico (soporte)", "select", {
+        ref: "orders",
+        required: false,
+      }),
+      amount,
+      f("due", "Vigencia", "date"),
+      f("deliveryDays", "Plazo estimado (días)", "number"),
+      f("deliverable", "Entregable", "select", {
+        options: [
+          "Certificado de calibración",
+          "Informe de verificación",
+          "Informe de reparación",
+          "Informe de diagnóstico",
+        ],
+      }),
+      f("conditions", "Condiciones de contratación", "textarea"),
+      f("acceptance", "Referencia de aceptación escrita", "text", {
+        required: false,
+      }),
+      detail,
+    ],
+  },
+  {
+    key: "customerOrders",
+    module: "comercial",
+    title: "Órdenes de compra del cliente",
+    singular: "OC de cliente",
+    prefix: "OCC",
+    description: "Órdenes recibidas del cliente que respaldan la contratación.",
+    columns: ["name", "clientId", "quoteId", "amount", "date"],
+    fields: [
+      f("name", "Número de OC cliente"),
+      client,
+      f("quoteId", "Proforma", "select", { ref: "quotes" }),
+      amount,
+      date,
+      detail,
+    ],
+  },
+  {
+    key: "notes",
+    module: "comercial",
+    title: "Notas de pedido",
+    singular: "nota de pedido",
+    prefix: "NP",
+    description:
+      "Formaliza servicios con la validación comercial y financiera.",
+    columns: ["name", "clientId", "orderId", "amount", "status"],
+    states: ["Borrador", "Validada"],
+    fields: [
+      f("name", "Concepto"),
+      client,
+      order,
+      f("quoteId", "Proforma aceptada", "select", { ref: "quotes" }),
+      f("customerOrderId", "OC del cliente", "select", {
+        ref: "customerOrders",
+        required: false,
+      }),
+      amount,
+      f("commitment", "Referencia de compromiso de pago", "text", {
+        required: false,
+      }),
+      detail,
+    ],
+  },
+  {
+    key: "warranties",
+    module: "comercial",
+    title: "Garantías",
+    singular: "garantía",
+    prefix: "GAR",
+    description:
+      "Cobertura vinculada al servicio original. Flujo propuesto a validar.",
+    columns: ["name", "clientId", "originalOrderId", "due", "status"],
+    states: ["En evaluación", "Cubierta", "No cubierta"],
+    fields: [
+      f("name", "Motivo del ingreso"),
+      client,
+      f("originalOrderId", "Orden original", "select", { ref: "orders" }),
+      f("due", "Vigencia contractual", "date"),
+      f("diagnosis", "Diagnóstico de cobertura", "textarea"),
+      amount,
+      detail,
+    ],
+  },
+];

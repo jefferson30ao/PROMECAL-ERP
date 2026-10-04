@@ -1,0 +1,5149 @@
+--- PÁGINA 1 ---
+ 
+ 
+UNIVERSIDAD  NACIONAL  MAYOR  DE  SAN  MARCOS  (Universidad  del  Perú,  DECANA  DE  AMÉRICA)   FACULTAD  DE  INGENIERÍA  DE  SISTEMAS  E  INFORMÁTICA  E.A.P  DE  INGENIERÍA  DE  SISTEMAS  E  INFORMÁTICA            Proyecto  de  la  asignatura  de  Taller  Distribuidos  DOCUMENTO  DE  ARQUITECTURA  DEL  SISTEMA  DE  ATENCIÓN  DE  PEDIDOS  
+DE
+ 
+LA
+ 
+EMPRESA
+ 
+PROMECAL
+ 
+   Presentado  por:  GRUPO  3:  Huayta  Esteban,  Piero  Alessandro  Mejía  Carrasco,  Marlo  Gabriel  Pacotaype  Chuchón,  Diego  Alonso  Pillaca  Machaca,  Richard  Josué  Pizango  Chang,  Josué  Alejandro  Porras  Chávez,  Miguel  Angel  Zavaleta  Gavilán,  Jack  Brian   Docente  Gil  Calvo  Ruben  
+ 
+
+--- PÁGINA 2 ---
+ 
+ 
+Lima  –  Perú  
+ÍNDICE  
+1.  Introducción  3 1.1  Propósito  3 1.2  Alcance  4 1.3  Definiciones  4 2.  Representación  Arquitectónica  5 3.  Metas  y  Restricciones  Arquitectónicas  :  6 3.1  Metas  6 3.2  Restricciones  7 4.  Vista  de  Casos  de  Uso  8 4.1  Descripción  del  Negocio  8 4.2  Identificación  de  los  procesos  del  negocio  10 4.3  Procesos  de  negocio  relevantes  para  el  sistema  11 4.4  Descripción  de  los  procesos  del  negocio  relevantes  para  el  sistema  12 4.4.1  PN1:  Proceso  de  Gestión  de  Equipos  Recibidos  12 4.4.2  PN2:  Proceso  de  venta  13 4.5  Modelo  de  Dominio  de  la  Aplicación  14 4.6  Identificar  a  los  actores  14 4.7  Casos  de  uso  relevantes  organizado  por  paquetes  15 4.8  Descripción  de  los  casos  de  uso  relevantes  para  la  arquitectura  16 4.9.  Prototipos  de  interfaz  de  usuarios.  34 4.10  Sección  de  restricciones  43 4.11  Sección  de  QoS  44 5.  Vista  Lógica  46 5.1.  Estilo  arquitectónico  46 5.2  Arquitectura  lógica  de  la  aplicación  48 5.3  Identificación  de  las  clases  del  diseño  49 6.  Vista  de  despliegue  85 6.1  Servidor  de  base  de  datos  85 6.2  Switch  85 6.3  Computadoras  85 7.  Vista  de  implementación  86 7.1  Descripción  86 7.2  Diagrama  de  componentes  86 8.  Vista  de  Datos  90 
+ 
+
+--- PÁGINA 3 ---
+ 
+ 
+8.1  Modelo  Relacional  90 
+1.  Introducción  
+Promecal  es  una  empresa  dedicada  a  brindar  servicios  de  calibración  y  soporte  técnico  de  
+instrumentos
+ 
+electrónicos.
+ 
+El
+ 
+sistema
+ 
+de
+ 
+Atención
+ 
+de
+ 
+Pedidos
+ 
+desempeña
+ 
+un
+ 
+papel
+ 
+fundamental,
+ 
+permitiendo
+ 
+la
+ 
+administración
+ 
+eficiente
+ 
+de
+ 
+la
+ 
+entrada
+ 
+de
+ 
+dispositivos
+ 
+para
+ 
+su
+ 
+posterior
+ 
+procesamiento
+ 
+y
+ 
+seguimiento.
+ 
+Este  documento  ofrece  una  visión  completa  de  la  arquitectura  del  Sistema  de  Atención  de  
+Pedidos
+ 
+(SAP),
+ 
+cubriendo
+ 
+sus
+ 
+objetivos,
+ 
+restricciones,
+ 
+casos
+ 
+de
+ 
+uso
+ 
+clave,
+ 
+patrones
+ 
+de
+ 
+diseño
+ 
+aplicados
+ 
+y
+ 
+decisiones
+ 
+arquitectónicas.
+ 
+Sirve
+ 
+como
+ 
+una
+ 
+guía
+ 
+estructurada
+ 
+para
+ 
+los
+ 
+desarrolladores
+ 
+y
+ 
+demás
+ 
+participantes
+ 
+en
+ 
+la
+ 
+implementación
+ 
+y
+ 
+desarrollo
+ 
+continuo
+ 
+del
+ 
+sistema.
+ 
+1.1  Propósito  
+Este  documento  de  arquitectura  de  software  tiene  como  propósito  proporcionar  una  
+visión
+ 
+clara
+ 
+y
+ 
+comprensible
+ 
+de
+ 
+la
+ 
+arquitectura
+ 
+del
+ 
+Sistema
+ 
+de
+ 
+Atención
+ 
+de
+ 
+Pedidos
+ 
+de
+ 
+la
+ 
+empresa
+ 
+Promecal.
+ 
+A
+ 
+través
+ 
+de
+1.2
+ 
+Alcance
+ 
+Para  la  elaboración  de  este  sistema  web,  se  considerarán  exclusivamente  los  procesos  de  
+negocio
+ 
+críticos
+ 
+que
+ 
+requieren
+ 
+atención
+ 
+inmediata,
+ 
+tales
+ 
+como
+ 
+el
+ 
+Proceso
+ 
+de
+ 
+Atención
+ 
+al
+ 
+cliente
+  
+y
+ 
+el
+ 
+Proceso
+ 
+de
+ 
+Ventas,
+ 
+automatizando
+ 
+los
+ 
+casos
+ 
+de
+ 
+uso
+ 
+relevantes
+ 
+descritos
+ 
+en
+ 
+el
+ 
+documento
+ 
+de
+ 
+Análisis.
+ 
+Este
+ 
+sistema
+ 
+está
+ 
+diseñado
+ 
+para
+ 
+abordar
+ 
+aspectos
+ 
+clave
+ 
+relacionados
+ 
+con
+ 
+la
+ 
+recepción
+ 
+y
+ 
+gestión
+ 
+eficiente
+ 
+de
+ 
+pedidos,
+ 
+la
+ 
+visualiza
+ 
+diferentes
+ 
+perspectivas
+ 
+arquitectónicas,
+ 
+este
+ 
+documento
+ 
+ilustra
+ 
+aspectos
+ 
+clave
+ 
+del
+ 
+diseño
+ 
+y
+ 
+ 
+
+--- PÁGINA 4 ---
+ 
+ 
+organización  del  sistema,  incluyendo  las  decisiones  más  relevantes  tomadas  en  el  proceso  
+de
+ 
+desarrollo.
+ 
+Este  documento  está  dirigido  a  desarrolladores,  arquitectos  de  software  y  otros  
+profesionales
+ 
+involucrados
+ 
+en
+ 
+la
+ 
+implementación,
+ 
+mantenimiento
+ 
+y
+ 
+evolución
+ 
+del
+ 
+sistema.
+ 
+Se
+ 
+busca
+ 
+brindar
+ 
+una
+ 
+base
+ 
+estructurada
+ 
+que
+ 
+facilite
+ 
+la
+ 
+comprensión
+ 
+y
+ 
+la
+ 
+implementación
+ 
+del
+ 
+sistema,
+ 
+permitiendo
+ 
+su
+ 
+integración
+ 
+eficaz
+ 
+en
+ 
+el
+ 
+conjunto
+ 
+de
+ 
+procesos
+ 
+de
+ 
+la
+ 
+empresa.
+ 
+ 
+ción  de  reportes,  el  control  de  ventas  y  certificados,  asegurando  así  una  operativa  
+optimizada
+ 
+y
+ 
+estructurada,
+ 
+con
+ 
+el
+ 
+objetivo
+ 
+de
+ 
+mejorar
+ 
+la
+ 
+eficiencia
+ 
+y
+ 
+organización
+ 
+de
+ 
+los
+ 
+procesos
+ 
+y
+ 
+garantizar
+ 
+una
+ 
+solución
+ 
+tecnológica
+ 
+robusta
+ 
+y
+ 
+adaptable
+ 
+a
+ 
+las
+ 
+necesidades
+ 
+del
+ 
+negocio.
+ 
+Se
+ 
+detallarán
+ 
+los
+ 
+patrones
+ 
+de
+ 
+diseño
+ 
+aplicados
+ 
+para
+ 
+garantizar
+ 
+la
+ 
+escalabilidad
+ 
+y
+ 
+mantenibilidad
+ 
+del
+ 
+sistema.
+ 
+El  Documento  de  Arquitectura  del  Sistema  de  Atención  de  Pedidos,  se  centra  en  las  
+vistas
+ 
+de
+ 
+caso
+ 
+de
+ 
+uso
+ 
+y
+ 
+lógica,
+ 
+integrando
+ 
+elementos
+ 
+de
+ 
+las
+ 
+vistas
+ 
+de
+ 
+procesos,
+ 
+implementación
+ 
+y
+ 
+despliegue.
+  
+Este
+ 
+documento
+ 
+plasma
+ 
+una
+ 
+comprensión
+ 
+común
+ 
+entre
+ 
+los
+ 
+stakeholders,
+ 
+facilita
+ 
+la
+ 
+toma
+ 
+de
+ 
+decisiones
+ 
+técnicas
+ 
+y
+ 
+sirve
+ 
+como
+ 
+guía
+ 
+para
+ 
+el
+ 
+desarrollo
+ 
+y
+ 
+mantenimiento
+ 
+del
+ 
+sistema.
+ 
+ 
+ 
+ 
+ 
+
+--- PÁGINA 5 ---
+ 
+ 
+ 
+1.3  Definiciones  
+●  Actor:  Un  actor  es  cualquier  entidad  que  interactúa  directamente  con  el  sistema  para  
+llevar
+ 
+a
+ 
+cabo
+ 
+una
+ 
+acción
+ 
+o
+ 
+lograr
+ 
+un
+ 
+objetivo.
+ 
+●  Caso  de  Uso:  Un  caso  de  uso  es  una  descripción  de  cómo  un  actor  interactúa  con  el  
+sistema
+ 
+para
+ 
+lograr
+ 
+un
+ 
+objetivo
+ 
+específico,
+ 
+detallando
+ 
+los
+ 
+pasos,
+ 
+requisitos
+ 
+y
+ 
+resultados
+ 
+esperados
+ 
+de
+ 
+esa
+ 
+interacción.
+ 
+●  Diseño:  El  diseño  en  arquitectura  de  software  se  refiere  a  la  estructura  y  organización  
+del
+ 
+sistema,
+ 
+incluyendo
+ 
+la
+ 
+definición
+ 
+de
+ 
+componentes,
+ 
+sus
+ 
+interacciones
+ 
+y
+ 
+patrones
+ 
+de
+ 
+diseño
+ 
+utilizados
+ 
+para
+ 
+resolver
+ 
+problemas
+ 
+específicos
+ 
+y
+ 
+garantizar
+ 
+la
+ 
+escalabilidad
+ 
+y
+ 
+mantenibilidad.
+ 
+●  Vista:  Una  vista  es  una  representación  particular  de  un  sistema  que  se  enfoca  en  un  
+aspecto
+ 
+específico
+ 
+de
+ 
+su
+ 
+arquitectura,
+ 
+como
+ 
+la
+ 
+lógica
+ 
+de
+ 
+negocio,
+ 
+procesos,
+ 
+o
+ 
+la
+ 
+implementación
+ 
+técnica,
+ 
+permitiendo
+ 
+a
+ 
+los
+ 
+interesados
+ 
+comprender
+ 
+diferentes
+ 
+dimensiones
+ 
+del
+ 
+sistema.
+ 
+●  Paquete:  Un  paquete  es  una  agrupación  lógica  de  clases,  componentes  o  módulos  que  
+encapsulan
+ 
+funcionalidades
+ 
+relacionadas,
+ 
+facilitando
+ 
+la
+ 
+organización
+ 
+del
+ 
+código
+ 
+y
+ 
+la
+ 
+gestión
+ 
+de
+ 
+dependencias
+ 
+dentro
+ 
+del
+ 
+sistema.
+ 
+ 
+ 
+
+--- PÁGINA 6 ---
+ 
+ 
+2.  Representación  Arquitectónica  
+Este  proyecto  utiliza  una  arquitectura  en  capas  combinada  con  el  patrón  
+Modelo-Vista-Controlador
+ 
+(MVC)
+ 
+y
+ 
+el
+ 
+modelo
+ 
+arquitectónico
+ 
+4+1.
+ 
+La
+ 
+capa
+ 
+de
+ 
+presentación
+ 
+gestiona
+ 
+la
+ 
+interfaz
+ 
+de
+ 
+usuario,
+ 
+la
+ 
+capa
+ 
+de
+ 
+aplicación
+ 
+contiene
+ 
+la
+ 
+lógica
+ 
+de
+ 
+negocio
+ 
+y
+ 
+la
+ 
+capa
+ 
+de
+ 
+persistencia
+ 
+permite
+ 
+el
+ 
+acceso
+ 
+a
+ 
+la
+ 
+base
+ 
+de
+ 
+datos
+ 
+mediante
+ 
+operaciones
+ 
+CRUD.
+ 
+El
+ 
+modelo
+ 
+4+1
+ 
+complementa
+ 
+esta
+ 
+estructura
+ 
+con
+ 
+cinco
+ 
+vistas:
+ 
+lógica,
+ 
+desarrollo,
+ 
+proceso,
+ 
+física
+ 
+y
+ 
+de
+ 
+casos
+ 
+de
+ 
+uso,
+ 
+para
+ 
+cubrir
+ 
+aspectos
+ 
+funcionales,
+ 
+estructurales
+ 
+y
+ 
+de
+ 
+distribución.
+ 
+Esta
+ 
+arquitectura
+ 
+garantiza
+ 
+un
+ 
+sistema
+ 
+modular,
+ 
+escalable
+ 
+y
+ 
+fácil
+ 
+de
+ 
+mantener,
+ 
+con
+ 
+una
+ 
+interfaz
+ 
+intuitiva
+ 
+y
+ 
+una
+ 
+base
+ 
+sólida
+ 
+para
+ 
+su
+ 
+evolución.
+ 
+3.  Metas  y  Restricciones  Arquitectónicas  
+La  meta  principal  de  la  arquitectura  del  sistema  es  establecer  las  directrices  que  influyen  en  el  
+proceso
+ 
+de
+ 
+desarrollo.
+ 
+A
+ 
+continuación,
+ 
+se
+ 
+presentan
+ 
+las
+ 
+metas
+ 
+y
+ 
+restricciones
+ 
+consideradas
+ 
+para
+ 
+el
+ 
+diseño
+ 
+de
+ 
+la
+ 
+arquitectura
+ 
+del
+ 
+sistema:
+ 
+3.1  Metas  
+●  Para  poder  acceder  al  sistema,  se  va  a  requerir  un  código  de  usuario  así  como  una  
+contraseña
+ 
+válida
+ 
+que
+ 
+garantice
+ 
+la
+ 
+eficiencia
+ 
+operativa
+ 
+y
+ 
+la
+ 
+confidencialidad
+ 
+de
+ 
+la
+ 
+información.
+ 
+●  El  acceso  a  las  distintas  funcionalidades  del  sistema  debe  estar  restringido  de  acuerdo  con  
+los
+ 
+perfiles
+ 
+de
+ 
+usuario
+ 
+y
+ 
+las
+ 
+responsabilidades
+ 
+específicas
+ 
+que
+ 
+desempeñan
+ 
+dentro
+ 
+del
+ 
+sistema.
+ 
+ 
+
+--- PÁGINA 7 ---
+ 
+ 
+●  Se  prioriza  una  arquitectura  flexible  y  modular  que  permita  futuras  ampliaciones  sin  
+afectar
+ 
+su
+ 
+funcionalidad
+ 
+central,
+ 
+asegurando
+ 
+una
+ 
+óptima
+ 
+atención
+ 
+de
+ 
+pedidos.
+ 
+●  Se  establece  la  integración  con  otros  sistemas  para  mejorar  la  interoperabilidad  y  
+visualización
+ 
+de
+ 
+los
+ 
+datos,
+ 
+reduciendo
+ 
+errores
+ 
+y
+ 
+optimizando
+ 
+la
+ 
+toma
+ 
+de
+ 
+decisiones.
+ 
+●  La  experiencia  del  usuario  es  un  eje  clave,  por  lo  que  el  sistema  debe  ofrecer  una  interfaz  
+intuitiva
+ 
+y
+ 
+accesible,
+ 
+alineada
+ 
+con
+ 
+los
+ 
+requerimientos
+ 
+operacionales
+ 
+de
+ 
+PROMECAL.
+ 
+●  Se  definirán  los  lineamientos  técnicos  esenciales,  incluyendo  tecnologías,  herramientas  y  
+protocolos
+ 
+de
+ 
+comunicación,
+ 
+para
+ 
+asegurar
+ 
+la
+ 
+estabilidad,
+ 
+seguridad
+ 
+y
+ 
+rendimiento
+ 
+del
+ 
+sistema
+ 
+en
+ 
+el
+ 
+tiempo.
+ 
+ 
+3.2  Restricciones  
+●  Número  máximo  de  usuarios  simultáneos  para  evitar  sobrecargas.  
+●  Solo  administradores  pueden  modificar  configuraciones  críticas.  
+●  Requiere  conexión  estable  a  la  red  para  su  operatividad.  
+●  Modificación  de  datos  históricos  solo  con  autorización.  
+●  Límite  de  almacenamiento  para  optimizar  el  rendimiento.  
+●  Inhabilitación  automática  de  sesión  tras  inactividad.  
+ 
+3.2.1  Restricciones  Técnicas  
+●  Motor  de  base  de  datos  PostgreSQL,  
+ 
+
+--- PÁGINA 8 ---
+ 
+ 
+●  Backend  desarrollado  en  Node.js  con  Express  y  Java  con  Spring  Boot  
+●  Frontend  implementado  en  TypeScript  con  React,  
+●  Despliegue  en  la  web  con  Vercel  con  CI/CD  integrado  y  entornos  de  pruebas  en  
+localhost.
+ 
+●  Servidores  deben  contar  con  al  menos  8  GB  de  RAM  y  procesadores  de  4  núcleos.  
+●  Comunicación  cifrada  mediante  TLS  1.2+  y  autenticación  basada  en  OAuth  2.0.  
+●  API  RESTful  con  autenticación  mediante  JWT  y  control  de  acceso  granular.  
+●  Control  de  versiones  con  GitHub  
+ 
+4.  Vista  de  Casos  de  Uso  
+Esta  sección  muestra  cómo  los  usuarios  perciben  las  funcionalidades  del  sistema,  destacando  el  
+proceso
+ 
+de
+ 
+negocio
+ 
+principal
+ 
+y
+ 
+los
+ 
+casos
+ 
+de
+ 
+uso
+ 
+críticos
+ 
+derivados
+ 
+de
+ 
+él.
+ 
+Proporciona
+ 
+contexto
+ 
+y
+ 
+establece
+ 
+el
+ 
+alcance
+ 
+para
+ 
+el
+ 
+resto
+ 
+del
+ 
+documento.
+ 
+Primero,
+ 
+se
+ 
+describe
+ 
+el
+ 
+negocio
+ 
+en
+ 
+general,
+ 
+seguido
+ 
+del
+ 
+modelo
+ 
+de
+ 
+dominio
+ 
+para
+ 
+el
+ 
+sistema.
+ 
+Además,
+ 
+se
+ 
+identifican
+ 
+los
+ 
+actores
+ 
+y
+ 
+se
+ 
+detallan
+ 
+los
+ 
+casos
+ 
+de
+ 
+uso
+ 
+más
+ 
+relevantes
+ 
+para
+ 
+la
+ 
+implementación.
+ 
+La
+ 
+estructura
+ 
+de
+ 
+este
+ 
+capítulo
+ 
+se
+ 
+organiza
+ 
+de
+ 
+la
+ 
+siguiente
+ 
+manera:
+ 
+       
+ 
+
+
+--- PÁGINA 9 ---
+ 
+ 
+          
+4.1  Descripción  del  Negocio  
+Promecal,  con  más  de  30  años  de  experiencia,  se  especializa  en  la  calibración  de  
+instrumentos
+ 
+de
+ 
+medición
+ 
+eléctrica,
+ 
+temperatura,
+ 
+presión
+ 
+y
+ 
+fotométrico,
+ 
+atendiendo
+ 
+diversos
+ 
+sectores
+ 
+industriales.
+ 
+Además,
+ 
+ofrece
+ 
+soporte
+ 
+técnico
+ 
+en
+ 
+mantenimiento
+ 
+y
+ 
+reparación
+ 
+de
+ 
+equipos
+ 
+industriales.
+ 
+Certificada
+ 
+por
+ 
+ABB
+ 
+y
+ 
+con
+ 
+alianzas
+ 
+estratégicas,
+ 
+asegura
+ 
+un
+ 
+servicio
+ 
+de
+ 
+alta
+ 
+calidad
+ 
+respaldado
+ 
+por
+ 
+un
+ 
+equipo
+ 
+en
+ 
+constante
+ 
+capacitación.
+ 
+Cuando  un  cliente  desea  obtener  algún  servicio  por  la  empresa  realiza  una  solicitud  de  
+pedido
+ 
+vía
+ 
+digital,
+ 
+telefónica
+ 
+o
+ 
+de
+ 
+manera
+ 
+presencial,
+  
+un
+ 
+ejecutivo
+ 
+de
+ 
+ventas
+ 
+atiende
+ 
+al
+ 
+cliente
+ 
+y
+ 
+le
+ 
+informa
+ 
+que
+ 
+el
+ 
+instrumento
+ 
+debe
+ 
+pasar
+ 
+por
+ 
+un
+ 
+previo
+ 
+Servicio
+ 
+de
+ 
+Diagnóstico
+ 
+para
+ 
+determinar
+ 
+si
+ 
+el
+ 
+equipo
+ 
+puede
+ 
+ser
+ 
+cotizado
+ 
+para
+ 
+los
+ 
+Servicios
+ 
+de
+ 
+Soporte
+ 
+Técnico
+ 
+y/o
+ 
+Calibración,
+ 
+así
+ 
+como
+ 
+todo
+ 
+el
+ 
+proceso
+ 
+a
+ 
+seguir.
+ 
+ 
+El  cliente  envía  sus  datos  incluyendo  el  nombre  completo,  razón  social,  DNI  y/o  RUC,  
+teléfonos
+ 
+de
+ 
+contacto,
+ 
+correos,
+ 
+etc.
+ 
+El
+ 
+ejecutivo
+ 
+de
+ 
+ventas
+ 
+coordina
+ 
+y
+ 
+solicita
+ 
+al
+ 
+cliente
+ 
+dejar
+ 
+su
+ 
+equipo
+ 
+en
+ 
+el
+ 
+área
+ 
+de
+ 
+Recepción.
+ 
+ 
+
+--- PÁGINA 10 ---
+ 
+ 
+El  asistente  de  recepción  recibe  el  equipo  y  la  guía  de  remisión,  si  no  tiene  guía  de  
+remisión
+ 
+crea
+ 
+un
+ 
+documento
+ 
+llamado
+ 
+“F01”
+ 
+y
+ 
+lo
+ 
+envía
+ 
+al
+ 
+ejecutivo
+ 
+de
+ 
+ventas
+ 
+para
+ 
+comprobar,
+ 
+si
+ 
+son
+ 
+los
+ 
+equipos
+ 
+descritos
+ 
+en
+ 
+el
+ 
+pedido.
+ 
+El
+ 
+ejecutivo
+ 
+de
+ 
+ventas
+ 
+informa
+ 
+al
+ 
+cliente
+ 
+que
+ 
+se
+ 
+recibió
+ 
+con
+ 
+éxito
+ 
+el
+ 
+equipo.
+ 
+El  ejecutivo  de  ventas  crea  el  documento  “Orden  de  Trabajo”  (donde  están  los  datos  del  
+cliente
+ 
+y
+ 
+la
+ 
+guía
+ 
+de
+ 
+remisión
+ 
+o
+ 
+el
+ 
+“F01”.
+ 
+)
+ 
+y
+ 
+lo
+ 
+envía
+ 
+al
+ 
+asistente
+ 
+de
+ 
+recepción.
+ 
+El  asistente  de  recepción  recibe  la  “Orden  de  Trabajo”,  entonces  verifica  que  el  equipo  
+tenga
+ 
+número
+ 
+de
+ 
+serie
+ 
+de
+ 
+no
+ 
+tenerlo,
+ 
+crea
+ 
+un
+ 
+código
+ 
+interno
+ 
+PROMECAL,
+ 
+entonces
+ 
+completa
+ 
+con
+ 
+las
+ 
+siguientes
+ 
+observaciones:
+ 
+número
+  
+de
+ 
+serie
+ 
+o
+ 
+código
+ 
+generado,
+ 
+correcta
+ 
+descripción
+  
+del
+ 
+equipo
+ 
+(modelo,
+ 
+marca,
+ 
+entre
+ 
+otros),
+ 
+revisión
+  
+de
+ 
+la
+ 
+parte
+ 
+externa
+ 
+del
+ 
+equipo
+ 
+(rajaduras,
+  
+manchas
+ 
+en
+ 
+la
+ 
+pantalla
+ 
+del
+ 
+equipo,
+ 
+golpes)
+ 
+de
+ 
+acuerdo
+ 
+al
+ 
+correo
+ 
+enviado
+ 
+por
+ 
+el
+ 
+ejecutivo
+ 
+de
+  
+ventas
+ 
+y
+ 
+de
+ 
+acuerdo
+ 
+a
+ 
+la
+ 
+verificación
+ 
+realizada
+  
+durante
+ 
+la
+ 
+recepción
+ 
+del
+ 
+equipo
+ 
+del
+ 
+cliente.
+ 
+Con
+ 
+todo
+ 
+ello
+ 
+se
+ 
+registra
+ 
+la
+ 
+orden
+ 
+de
+ 
+trabajo
+ 
+para
+ 
+el
+ 
+Servicio
+ 
+de
+ 
+Diagnóstico,
+ 
+se
+ 
+archiva
+ 
+y
+ 
+se
+ 
+envía
+ 
+una
+ 
+copia
+ 
+al
+ 
+área
+ 
+de
+ 
+Servicio
+ 
+Técnico.
+ 
+El  asistente  técnico  visualiza  la  orden  de  trabajo  para  comenzar  con  el  diagnóstico  del  
+equipo
+ 
+y
+ 
+elabora
+ 
+un
+ 
+informe
+ 
+de
+ 
+diagnóstico
+ 
+que
+ 
+lo
+ 
+envía
+ 
+al
+ 
+ejecutivo
+ 
+de
+ 
+ventas
+ 
+a
+ 
+través
+ 
+de
+ 
+gmail.
+ 
+ 
+ 
+El  ejecutivo  de  ventas  recibe  el  Informe  de  Diagnóstico  y  se  comunica  con  el  cliente  para  
+confirmar
+ 
+si
+ 
+continúa
+ 
+o
+ 
+no
+ 
+con
+ 
+los
+ 
+Servicios
+ 
+que
+ 
+desea
+ 
+realizar,
+ 
+en
+ 
+caso
+ 
+afirmativo,
+ 
+se
+ 
+genera
+ 
+una
+ 
+nueva
+ 
+orden
+ 
+de
+ 
+trabajo
+ 
+y
+ 
+se
+ 
+envía
+ 
+al
+ 
+área
+ 
+de
+ 
+Soporte
+ 
+técnico
+ 
+o
+ 
+Calibración,
+ 
+en
+ 
+caso
+ 
+contrario,
+ 
+Se
+ 
+procede
+ 
+a
+ 
+elaborar
+ 
+una
+ 
+proforma
+ 
+de
+ 
+servicios
+ 
+a
+ 
+partir
+ 
+de
+ 
+la
+ 
+orden
+ 
+de
+ 
+trabajo
+ 
+del
+ 
+diagnóstico
+ 
+realizado.
+ 
+En
+ 
+ambos
+ 
+casos,
+ 
+se
+ 
+elaborará
+ 
+una
+ 
+nota
+ 
+de
+ 
+pedido
+ 
+de
+ 
+ 
+
+--- PÁGINA 11 ---
+ 
+ 
+servicios  para  el  pago  por  el  servicio  o  servicios  realizados.  Se  envía  al  cliente  la  proforma  
+de
+ 
+servicios,
+ 
+informe
+ 
+técnico
+ 
+y
+ 
+el
+ 
+alcance
+ 
+del
+ 
+servicio
+ 
+técnico
+ 
+vía
+ 
+correo
+ 
+electrónico.
+ 
+El  cliente  revisa  la  documentación  y  tendrá  un  plazo  máximo  de  7  días  y  debe  pagar  el  
+100%
+ 
+del
+ 
+monto
+ 
+total,
+ 
+una
+ 
+vez
+ 
+hecho
+ 
+el
+ 
+pago,
+ 
+el
+ 
+ejecutivo
+ 
+de
+ 
+ventas
+ 
+registra
+ 
+en
+ 
+la
+ 
+proforma
+ 
+de
+ 
+servicios
+ 
+como
+ 
+“pagado”.
+ 
+El
+ 
+ejecutivo
+ 
+de
+ 
+Ventas
+ 
+revisa
+ 
+el
+ 
+estado
+ 
+del
+ 
+pago
+ 
+y
+ 
+procede
+ 
+a
+ 
+autorizar
+ 
+la
+ 
+entrega
+ 
+del
+ 
+equipo.
+ 
+ 
+ 
+4.2  Identificación  de  los  procesos  del  negocio  
+Se  identifican  4  procesos  del  negocio:  
+●  PN1:  Proceso  de  Atención  al  cliente  
+●  PN2:  Proceso  de  Calibración  de  Equipos  
+●  PN3:  Proceso  de  Soporte  Técnico  
+●  PN4:  Proceso  de  Ventas  
+4.3  Procesos  de  negocio  relevantes  para  el  sistema  
+Los  procesos  relevantes  del  sistema  son  los  procesos  de  "Proceso  de  Atención  al  cliente"  
+y
+ 
+"Proceso
+ 
+de
+ 
+ventas"
+  
+ya
+ 
+que
+ 
+en
+ 
+ellos
+ 
+se
+ 
+centra
+ 
+la
+ 
+operativa
+ 
+del
+ 
+sistema.
+ 
+ 
+El  Proceso  de  Atención  al  Cliente  (PN1)  se  basa  en  la  recepción  y  verificación  de  equipos  
+enviados
+ 
+por
+ 
+los
+ 
+clientes
+ 
+para
+ 
+diagnóstico
+ 
+y
+ 
+servicio
+ 
+técnico.
+ 
+Se
+ 
+documenta
+ 
+la
+ 
+recepción
+ 
+con
+ 
+una
+ 
+guía
+ 
+de
+ 
+remisión
+ 
+o
+ 
+un
+ 
+documento
+ 
+sustituto,
+ 
+se
+ 
+revisa
+ 
+el
+ 
+estado
+ 
+del
+ 
+equipo
+ 
+y
+ 
+se
+ 
+ 
+
+--- PÁGINA 12 ---
+ 
+ 
+emite  una  orden  de  trabajo  para  su  evaluación  técnica.  El  Proceso  de  Ventas  (PN4)  se  
+centra
+ 
+en
+ 
+la
+ 
+gestión
+ 
+comercial
+ 
+tras
+ 
+el
+ 
+diagnóstico
+ 
+técnico.
+ 
+Incluye
+ 
+la
+ 
+generación
+ 
+de
+ 
+una
+ 
+proforma
+ 
+de
+ 
+servicio,
+ 
+la
+ 
+emisión
+ 
+de
+ 
+una
+ 
+nota
+ 
+de
+ 
+pedido
+ 
+y
+ 
+la
+ 
+recepción
+ 
+del
+ 
+pago
+ 
+para
+ 
+proceder
+ 
+con
+ 
+la
+ 
+entrega
+ 
+del
+ 
+equipo
+ 
+al
+ 
+cliente.
+ 
+ 
+
+--- PÁGINA 13 ---
+ 
+ 
+4.4  Descripción  de  los  procesos  del  negocio  relevantes  para  el  sistema  
+4.4.1  PN1:  Proceso  de  Atención  al  Cliente  
+ 
+    
+ 
+
+
+--- PÁGINA 14 ---
+ 
+ 
+    4.4.2  PN2:  Proceso  de  venta  
+ 
+ 
+ 
+
+
+--- PÁGINA 15 ---
+ 
+ 
+4.5  Modelo  de  Dominio  de  la  Aplicación   
+    
+4.6  Identificar  a  los  actores  
+Los  actores  del  sistema  que  han  sido  identificados  son  los  siguientes:  
+ ●  Administrador  
+El  administrador  es  el  encargado  de  administrar  la  seguridad  del  subsistema,  donde  valida  
+el
+ 
+acceso
+ 
+de
+ 
+los
+ 
+roles
+ 
+del
+ 
+sistema
+ 
+●  Asistente  técnico   El  Asistente  Técnico  es  quien  visualiza  las  órdenes  de  trabajo,  elabora  informes  de  
+diagnóstico,
+ 
+genera
+ 
+certificados
+ 
+de
+ 
+calibración
+ 
+o
+ 
+soporte
+ 
+técnico,
+ 
+y
+ 
+prepara
+ 
+informes
+ 
+de
+ 
+servicio
+ 
+técnico
+ 
+o
+ 
+de
+ 
+calibración
+ 
+para
+ 
+enviarlos
+ 
+al
+ 
+Ejecutivo
+ 
+de
+ 
+Ventas.
+ 
+ 
+
+
+--- PÁGINA 16 ---
+ 
+ 
+●  Ejecutivo  de  ventas  El  Ejecutivo  de  Ventas  es  quien  gestiona  la  relación  con  los  clientes,  generando  proformas,  
+elaborando
+ 
+notas
+ 
+de
+ 
+pedido
+ 
+de
+ 
+servicios,
+ 
+registrando
+ 
+pagos
+ 
+y
+ 
+autorizando
+ 
+la
+ 
+entrega
+ 
+de
+ 
+equipos
+ 
+tras
+ 
+la
+ 
+confirmación
+ 
+de
+ 
+los
+ 
+pagos.
+ 
+●  Asistente  de  recepción  El  Asistente  de  Recepción  es  quien  visualiza   las  guías  de  remisión  proporcionadas  por  los  
+clientes
+ 
+y
+ 
+elabora
+ 
+las
+ 
+órdenes
+ 
+de
+ 
+trabajo.
+  
+ 
+ 
+ 
+ 
+ 
+ 
+                
+ 
+
+
+--- PÁGINA 17 ---
+ 
+ 
+4.7  Casos  de  uso  relevantes  organizado  por  paquetes  
+4.7.1  Paquete  Negocio  Principal  
+ 
+ 
+  
+ 
+    
+ 
+
+
+--- PÁGINA 18 ---
+ 
+ 
+4.8  Descripción  de  los  casos  de  uso  relevantes  para  la  arquitectura  
+4.8.1  Descripción  de  los  casos  de  uso  relevantes  para  el  paquete  Atencion  al  Cliente    
+ 
+ID  CUS-01   Caso  de  Uso  Gestionar  Clientes  Actor  Ejecutivo  de  Ventas  Descripción  El  Ejecutivo  de  Ventas  podrá  añadir,  modificar,  archivar  o  eliminar  la  información  de  un  cliente  en  el  sistema.  Precondición  El  usuario  debe  estar  autenticado  como  Ejecutivo  de  Ventas.  Flujo  Principal:  Añadir  Cliente  1.  El  CUS  empieza  cuando  el  Ejecutivo  de  ventas  selecciona  la  pestaña  ”Gestión  de  equipos”  en  la  interfaz  Menú  Principal.  2.  El  sistema  muestra  la  interfaz  “Gestión  de  Equipos”  y  el  Ejecutivo  de  ventas  pulsa  la  opción  “Gestionar  clientes”.  3.  El  sistema  muestra  la  interfaz  “Gestionar  clientes”,  el  sistema  despliega  una  lista  con  todos  los  clientes  registrados.  4.  El  Ejecutivo  de  ventas  selecciona  la  opción  "Añadir  Cliente".  5.  El  sistema  presenta  un  formulario  donde  el  asistente  ingresa  los  datos  del  cliente  (nombre,  documento  de  identidad,  contacto,  entre  otros).  6.  El  Ejecutivo  de  ventas  pulsa  "Guardar".  7.  El  sistema  verifica  la  validez  de  los  datos  y  asigna  un  código  único  al  cliente.  8.  El  sistema  guarda  la  información  del  cliente  en  la  base  de  datos  y  muestra  un  mensaje  de  confirmación.  9.  El  caso  de  uso  finaliza  exitosamente.  Post-condición:  Se  ha  registrado  la  información  del  pedido  de  servicio  (Añadir,  Modificar,  Archivar,  Eliminar).  Flujo  Alterno  1:  Modificar  Cliente  1.  El  Ejecutivo  de  ventas  selecciona  un  cliente  de  la  lista  y  pulsa  la  opción  "Modificar".  2.  El  sistema  permite  editar  los  campos  y  luego  guardar  los  cambios.  3.  El  sistema  actualiza  la  información  del  cliente  en  la  base  de  datos.  Flujo  Alterno  2:  Eliminar  Cliente  1.  El  Ejecutivo  de  ventas  selecciona  un  cliente  de  la  lista  y  pulsa  "Eliminar".  2.  El  sistema  muestra  un  mensaje  de  confirmación.  3.  Al  confirmar,  el  cliente  es  eliminado  del  sistema.  
+
+--- PÁGINA 19 ---
+ 
+ 
+ID  CUS-02  Caso  de  Uso  Gestionar  Orden  de  Trabajo  Actor  Asistente  de  Recepción  Descripción  El  Asistente  de  Recepción  podrá  completar  la  Orden  de  Trabajo  
+Precondición  
+El  usuario  ha  sido  admitido  al  sistema  con  el  rol  de  Asistente  de  Recepción.  Flujo  Principal:   1.  El  caso  de  uso  inicia  cuando  el  Asistente  de  Recepción  selecciona  la  pestaña  “Gestionar  Orden  de  Trabajo”  en  la  interfaz  del  Menú  Principal.  2.  El  Asistente  de  Recepción  selecciona  la  opción  "Completar  Orden".  3.  El  sistema  presenta  los  campos  requeridos  para  la  información  de  la  orden  de  trabajo  incluyendo:  ●  Número  de  Serie  o  Código  generado  ●  Descripción  del  equipo  ●  Modelo   ●  Marca  4.  El  Asistente  de  Recepción  completa  todos  los  campos  con  la  información  correspondiente  a  la  Orden  de  Trabajo.  5.  El  sistema  muestra  tres  casillas  de  verificación  del  estado  físico  del  equipo,  cada  una  con  opciones  Sí  y  No,  con  las  etiquetas:  ●  Rajaduras   ●  Manchas   ●  Golpes.  6.  El  Asistente  de  Recepción  selecciona  la  opción  correspondiente  para  cada  casilla,  según  la  verificación  realizada  sobre  el  estado  físico  del  equipo.  7.  El  sistema  registra  la  Orden  de  Trabajo.  8.  El  sistema  muestra  un  mensaje  de  confirmación  indicando  que  la  orden  ha  sido  registrada  exitosamente.  9.  El  sistema  habilita  una  copia  de  la  Orden  de  Trabajo  al  área  de  Servicio  Técnico.  10.  El  caso  de  uso  finaliza  exitosamente.  Post-condición   Se  ha  registrado  la  orden  correctamente.  Flujo  Alterno  1  Editar  Orden  de  Trabajo  
+ 
+
+--- PÁGINA 20 ---
+ 
+ 
+1.  El  Asistente  de  Recepción  selecciona  la  opción  "Editar  Orden"  en  la  interfaz  de  Gestionar  Orden  de  Trabajo.  2.  El  sistema  presenta  una  lista  de  órdenes  registradas,  mostrando  los  detalles  de  cada  orden  (Número  de  Serie  o  Código,  Descripción  del  equipo,  Modelo,  Marca,  Estado  físico,  etc.).  3.  El  Asistente  de  Recepción  selecciona  la  Orden  de  Trabajo  que  desea  editar.  4.  El  sistema  muestra  la  información  actual  de  la  Orden  de  Trabajo  en  un  formulario  editable.  5.  El  Asistente  de  Recepción  modifica  los  campos  deseados  (por  ejemplo,  Descripción  del  equipo,  Modelo,  Marca,  Estado  físico).  6.  El  sistema  valida  los  datos  actualizados  y,  si  todo  es  correcto,  registra  los  cambios  en  la  Orden  de  Trabajo.  7.  El  sistema  muestra  un  mensaje  de  confirmación  indicando  que  la  Orden  de  Trabajo  ha  sido  editada  exitosamente.  8.  El  sistema  envía  una  actualización  de  la  Orden  de  Trabajo  al  área  de  Servicio  Técnico,  reflejando  los  cambios  realizados.  Flujo  Alterno  2  Eliminar  Orden  de  Trabajo  1.  El  Asistente  de  Recepción  selecciona  la  opción  "Eliminar  Orden"  en  la  interfaz  de  Gestionar  Orden  de  Trabajo.  2.  El  sistema  presenta  una  lista  de  órdenes  registradas,  mostrando  los  detalles  de  cada  orden  (Número  de  Serie  o  Código,  Descripción  del  equipo,  Modelo,  Marca,  Estado  físico,  etc.).  3.  El  Asistente  de  Recepción  selecciona  la  Orden  de  Trabajo  que  desea  eliminar.  4.  El  sistema  muestra  una  pantalla  de  confirmación  que  detalla  la  información  de  la  Orden  de  Trabajo  seleccionada  y  solicita  una  confirmación  de  eliminación.  5.  El  Asistente  de  Recepción  confirma  que  desea  eliminar  la  Orden  de  Trabajo.  6.  El  sistema  verifica  que  la  Orden  de  Trabajo  pueda  ser  eliminada  (por  ejemplo,  que  no  esté  en  proceso  o  asignada  a  un  técnico).  7.  Si  la  verificación  es  exitosa,  el  sistema  procede  a  eliminar  la  Orden  de  Trabajo  del  registro.  8.  El  sistema  muestra  un  mensaje  de  confirmación  indicando  que  la  Orden  de  Trabajo  ha  sido  eliminada  exitosamente.  9.  El  sistema  envía  una  notificación  al  área  de  Servicio  Técnico,  informando  que  la  Orden  de  Trabajo  ha  sido  eliminada  y  que  no  es  necesaria  su  intervención.  
+ 
+  
+ 
+
+--- PÁGINA 21 ---
+ 
+ 
+ID  CUS-03  Caso  de  Uso  Visualizar  Guía  de  Remisión  Actor  Asistente  de  recepción  Descripción  El  Asistente  de  Recepción  será  el  encargado  de  verificar  la  existencia  de  una  guía  de  remisión  proporcionada  por  el  cliente.  Si  el  cliente  no  presenta  una  guía  de  remisión  válida,  el  Asistente  de  Recepción  deberá  generar  un  documento  sustituto  denominado  "F01"  que  cumpla  con  la  función  de  respaldo.  Precondición  El  Asistente  de  Recepción  debe  estar  autenticado  en  el  sistema.  Flujo  Principal:   1.  El  asistente  de  recepción  accede  a  la  sección  "Guía  de  Remisión"  2.  El  sistema  muestra  una  lista  de  órdenes  de  trabajo  pendientes  de  diagnóstico.  3.  El  asistente  de  recepción  puede:  ●  Filtrar  por  fecha  ●  Filtrar  por  cliente  ●  Buscar  por  número  de  guia  4.  El  asistente  de  recepción  selecciona  una  guía  de  remisión  específica.  5.  El  sistema  muestra  los  detalles  completos  de  la  guia:  ●  Número  de  guia  ●  Fecha  de  recepción  ●  Datos  del  cliente  ●  Dirección  de  Origen  ●  Dirección  de  Destino  ●  Información  del  equipo  ○   Marca  ○   Modelo  ○   Número  de  serie/código  PROMECAL  ○   Estado  físico  del  equipo  ●  Firma  y  Sello  Post-condición   El  sistema  registra  que  la  guía  ha  sido  visualizada.  Se  registra  la  fecha  y  hora  de  visualización.  Flujo  Alterno  1  Si  el  cliente  no  presenta  una  guía  de  remisión   
+ 
+
+--- PÁGINA 22 ---
+ 
+ 
+1.  El  Asistente  de  Recepción  selecciona  la  opción  "Generar  Documento  F01".  2.  El  sistema  muestra  un  formulario  para  ingresar  la  información  necesaria  (como  datos  del  cliente,  descripción  de  los  bienes,  y  detalles  del  transporte).  3.  El  Asistente  de  Recepción  completa  y  confirma  el  formulario.  4.  El  sistema  genera  y  guarda  el  documento  F01.  5.  El  documento  F01  se  imprime  o  guarda  como  respaldo  en  el  sistema.  
+ 
+ID  CUS-04  Caso  de  Uso  Visualizar  Orden  de  Trabajo  Actor  Asistente  Técnico  Descripción  Este  caso  de  uso  permite  al  asistente  técnico  visualizar  la  orden  de  trabajo  generada  previamente  por  el  ejecutivo  de  ventas  y  completada  por  el  asistente  de  recepción,  incluyendo  todos  los  detalles  del  equipo  recibido,  observaciones  de  recepción  y  datos  del  cliente,  para  proceder  con  el  diagnóstico  correspondiente.  Precondición  El  asistente  técnico  debe  estar  autenticado  en  el  sistema.  Debe  existir  al  menos  una  orden  de  trabajo  registrada  en  el  sistema.  La  orden  de  trabajo  debe  estar  en  estado  "Registrada"  La  orden  debe  haber  sido  completada  por  el  asistente  de  recepción.  Flujo  Principal:   
+ 
+
+--- PÁGINA 23 ---
+ 
+ 
+1.  El  asistente  técnico  accede  a  la  sección  "Órdenes  de  Trabajo"  2.  El  sistema  muestra  una  lista  de  órdenes  de  trabajo  pendientes  de  diagnóstico  3.  El  asistente  técnico  puede:  ●  Filtrar  por  fecha  ●  Filtrar  por  cliente  ●  Buscar  por  número  de  orden  4.  El  asistente  técnico  selecciona  una  orden  de  trabajo  específica  5.  El  sistema  muestra  los  detalles  completos  de  la  orden:  ●  Número  de  orden  ●  Fecha  de  recepción  ●  Datos  del  cliente  ●  Información  del  equipo  1.   Marca  2.   Modelo  3.   Número  de  serie/código  PROMECAL  4.   Estado  físico  del  equipo  ●  Observaciones  de  recepción  ●  Documentos  adjuntos  (guía  de  remisión  o  F01)  5.  El  sistema  permite:  ●  Descargar  la  orden  en  PDF  ●  Imprimir  la  orden  ●  Ver  historial  de  modificaciones   Post-condición   El  sistema  registra  que  la  orden  ha  sido  visualizada  Se  actualiza  el  estado  de  la  orden  a  "En  diagnóstico"  Se  registra  la  fecha  y  hora  de  visualización  Flujo  Alterno  1  No  hay  órdenes  pendientes:   1.  El  sistema  muestra  mensaje  "No  hay  órdenes  de  trabajo  pendientes"  2.  Ofrece  la  opción  de  ver  órdenes  históricas  Flujo  Alterno  1  Orden  ya  en  proceso   1.  Si  otro  asistente  técnico  está  visualizando  la  orden  2.  El  sistema  muestra  una  alerta  de  "Orden  en  uso"  3.  Indica  qué  usuario  está  trabajando  en  ella    
+ 
+
+--- PÁGINA 24 ---
+ 
+ 
+ID  CUS-05   Caso  de  Uso  Elaborar  Informe  de  Diagnóstico  Actor  Asistente  Técnico  Descripción  Este  caso  de  uso  permite  al  Asistente  Técnico  completar  y  enviar  un  informe  de  diagnóstico  de  un  equipo  en  mantenimiento.  Se  requiere  ingresar  información  sobre  la  orden  de  trabajo,  el  estado  del  equipo,  los  problemas  encontrados,  el  diagnóstico  técnico,  la  factibilidad  de  reparación  y  las  recomendaciones,  además  de  permitir  la  opción  de  adjuntar  un  archivo  si  es  necesario.  
+Precondición  ●  Debe  existir  una  orden  de  trabajo  registrada  en  el  sistema  ●  El  asistente  técnico  debe  haber  iniciado  sesión  en  el  sistema  ●  El  asistente  técnico  debe  tener  permisos  para  acceder  a  la  funcionalidad  de  elaboración  de  informes.  Flujo  Principal:   
+ 
+
+--- PÁGINA 25 ---
+ 
+ 
+1.  El  asistente  técnico  accede  a  la  opción  "Elaborar  Informe  de  Diagnóstico"  desde  el  menú  lateral.  2.  El  sistema  muestra  el  formulario  correspondiente  con  los  siguientes  campos:  ❖  Número  de  Orden  de  Trabajo  (seleccionable  desde  un  desplegable).  ❖  Número  de  Serie  del  equipo.  ❖  Estado  Actual  del  Equipo.  ❖  Problemas  Encontrados.  ❖  Diagnóstico  Técnico.  ❖  Recomendaciones.  ❖  Factibilidad  de  Reparación  (seleccionable).  ❖  Adjuntar  Archivo  (opcional).  3.  El  asistente  técnico  selecciona  una  orden  de  trabajo  existente  desde  el  desplegable.  4.  El  asistente  técnico  ingresa  el  número  de  serie  del  equipo,  completa  los  campos  obligatorios  describiendo  el  estado  del  equipo,  los  problemas  encontrados,  el  diagnóstico  técnico  y  las  recomendaciones.  5.  El  asistente  técnico  selecciona  el  nivel  de  factibilidad  de  reparación  desde  una  lista  desplegable.  6.  El  asistente  técnico  adjunta  un  archivo  si  lo  considera  necesario(opcional).  7.  El  asistente  técnico  presiona  el  botón  "Guardar  y  Enviar" .  8.  El  sistema  valida  los  datos  ingresados  y  guarda  la  información  en  la  base  de  datos.  9.  El  sistema  genera  el  informe  en  formato  PDF.  10.  El  sistema  envía  automáticamente  el  informe  al  ejecutivo  de  ventas  vía  correo  electrónico.  11.  El  sistema  confirma  que  el  informe  de  diagnóstico  ha  sido  enviado  correctamente.  Post-condición  :  ●  El  informe  de  diagnóstico  queda  registrado  en  el  sistema  y  asociado  a  la  orden  de  trabajo  correspondiente.  ●  El  ejecutivo  de  ventas  recibe  el  informe  vía  correo  electrónico  ●  El  estado  de  la  orden  de  trabajo  se  actualiza  a  "Diagnóstico  Completado".   
+ 
+
+--- PÁGINA 26 ---
+ 
+ 
+Flujo  Alterno   1.  Campos  incompletos:  a.  Si  faltan  campos  obligatorios,  el  sistema  muestra  un  mensaje  de  error  b.  El  asistente  técnico  debe  completar  los  campos  faltantes  2.  Error  en  el  envío  del  correo:  a.  Si  falla  el  envío  automático,  el  sistema  notifica  al  asistente  técnico  b.  El  sistema  permite  reintento  manual  del  envío  c.  El  asistente  técnico  puede  descargar  el  PDF  para  envío  manual  3.  Equipo  irreparable:  a.  Si  el  diagnóstico  determina  que  el  equipo  es  irreparable  b.  El  asistente  técnico  marca  la  casilla  "Equipo  irreparable"  c.  El  sistema  solicita  justificación  técnica  detallada  d.  Se  genera  una  notificación  prioritaria  al  ejecutivo  de  ventas  4.  Fallo  en  la  generación  del  PDF:  a.  El  sistema  muestra  mensaje  de  error  b.  Permite  guardar  el  informe  en  formato  borrador  c.  El  asistente  técnico  puede  reintentar  la  generación  del  PDF    4.8.2  Descripción  de  los  casos  de  uso  relevantes  para  el  paquete  Ventas   ID  CUS-06  Caso  de  Uso  Gestionar  Proforma  de  Servicios  Actor  Ejecutivo  de  Ventas  Descripción  El  Ejecutivo  de  Ventas  podrá  añadir  una  nueva  Proforma  de  Servicios,  así  como  modificarla  o  eliminarla.  Precondición  El  usuario  ha  sido  admitido  al  sistema  con  el  rol  de  Ejecutivo  de  Ventas.  La  Orden  de  Trabajo  ha  sido  generada  previamente  en  el  sistema  Postcondición  La  Proforma  de  Servicios  ha  sido  generada,  modificada  o  eliminada  correctamente  Flujo  Principal:  Añadir  Proforma  de  Servicios  
+ 
+
+--- PÁGINA 27 ---
+ 
+ 
+1.  El  Caso  de  Uso  empieza  cuando  el  Ejecutivo  de  ventas  selecciona  la  pestaña  ”Ventas”  en  la  interfaz  Menú  Principal.  1.  El  sistema  muestra  la  interfaz  “Ventas”  y  el  Ejecutivo  de  ventas  pulsa  la  opción  “Gestionar  Proformas”.  2.  El  sistema  muestra  la  interfaz  “Ventas”  con  la  interfaz  “Gestionar  Proformas”,  que  contiene  una  lista  de  todas  las  proformas  registradas  y  cada  ítem  existente  contiene  sus  opciones  “Modificar”  y  “Eliminar”.  3.  El  Ejecutivo  de  Ventas  de  Recepción  pulsa  “Añadir”  en  la  interfaz  “Gestionar  proformas”.  4.  El  sistema  muestra  la  interfaz  “Añadir  proformas”.  5.  El  sistema  muestra  un  formulario  con  los  campos  requeridos  para  ingresar  los  datos  de  la  proforma,  incluyendo:  ●  Detalle  del  servicio  solicitado  ●  Precio  del  servicio  ●  Tiempo  estimado  de  entrega  ●  Condiciones  de  contratación  6.  El  Ejecutivo  de  Ventas  completa  los  campos  con  la  información  correspondiente  de  la  proforma  basándose  en  la  Orden  de  Trabajo.  7.  El  Ejecutivo  de  Ventas  selecciona  la  opción  “Guardar”.  8.  El  sistema  guarda  toda  la  información  ingresada  en  la  tabla  de  proformas  de  la  base  de  datos.  9.  El  sistema  muestra  un  mensaje  de  confirmación  indicando  que  la  proforma  ha  sido  registrada  exitosamente.  10.  El  caso  de  uso  finaliza  exitosamente.  Flujo  Alterno  1  Modificar  Proforma  de  Servicios  
+ 
+
+--- PÁGINA 28 ---
+ 
+ 
+1.  El  Caso  de  Uso  empieza  cuando  el  Ejecutivo  de  ventas  selecciona  la  pestaña  ”Ventas”  en  la  interfaz  Menú  Principal.  2.  El  sistema  muestra  la  interfaz  “Ventas”  y  el  Ejecutivo  de  ventas  pulsa  la  opción  “Gestionar  Proformas”.  3.  El  sistema  muestra  la  interfaz  “Ventas”  con  la  interfaz  “Gestionar  Proformas”,  que  contiene  una  lista  de  todas  las  proformas  registradas  y  cada  ítem  existente  contiene  sus  opciones  “Modificar”  y  “Eliminar”.  4.  El  Ejecutivo  de  Ventas  selecciona  la  proforma  que  desea  modificar  de  la  lista.  5.  El  sistema  muestra  la  interfaz  Modificar  Proforma,  con  los  campos  actuales  del  equipo  pre-llenados.  6.  El  sistema  presenta  los  campos  editables,  incluyendo:  ●  Detalle  del  servicio  solicitado  ●  Precio  del  servicio  ●  Tiempo  estimado  de  entrega  ●  Condiciones  de  contratación  7.  El  Ejecutivo  de  Ventas   modifica  los  campos  necesarios.  8.  El  Ejecutivo  de  Ventas  selecciona  la  opción  Guardar  para  aplicar  los  cambios.  9.  El  sistema  actualiza  la  información  de  la  proforma  en  la  tabla  de  Proformas  en  la  base  de  datos.  10.  El  sistema  muestra  un  mensaje  de  confirmación  indicando  que  la  información  de  la  proforma  ha  sido  modificada  exitosamente.  11.  El  caso  de  uso  finaliza  exitosamente.  Flujo  Alterno  2  Eliminar  Proforma  de  Servicios  
+ 
+
+--- PÁGINA 29 ---
+ 
+ 
+1.  El  Caso  de  Uso  empieza  cuando  el  Ejecutivo  de  ventas  selecciona  la  pestaña  ”Ventas”  en  la  interfaz  Menú  Principal.  2.  El  sistema  muestra  la  interfaz  “Ventas”  y  el  Ejecutivo  de  ventas  pulsa  la  opción  “Gestionar  Proformas”.  3.  El  sistema  muestra  la  interfaz  “Ventas”  con  la  interfaz  “Gestionar  Proformas”,  que  contiene  una  lista  de  todas  las  proformas  registradas  y  cada  ítem  existente  contiene  sus  opciones  “Modificar”  y  “Eliminar”.  4.  El  Ejecutivo  de  Ventas  selecciona  la  proforma  que  quiere  eliminar.  5.  El  sistema  muestra  una  interfaz  de  confirmación  con  los  detalles  de  la  proforma  seleccionada  y  un  mensaje  de  advertencia  indicando  que  la  eliminación  es  irreversible.  6.  El  Ejecutivo  de  Ventas   selecciona  la  opción  Confirmar  eliminación.  7.  El  sistema  elimina  la  proforma  de  la  tabla  de  Proformas  en  la  base  de  datos.  8.  El  sistema  muestra  un  mensaje  de  confirmación  indicando  que  la  proforma  ha  sido  eliminada  exitosamente.  9.  El  caso  de  uso  finaliza  exitosamente.   ID:  CUS-07  Caso  de  Uso:  Elaborar  Nota  de  Pedido  de  Servicios  Actor:  Ejecutivo  de  Ventas  Descripción:  Este  caso  de  uso  describe  el  proceso  mediante  el  cual  el  Ejecutivo  de  Ventas  genera  una  Nota  de  Pedido  de  Servicios  al  completar  la  prestación  de  un  servicio.  La  nota  contendrá  información  relevante  sobre  el  servicio  realizado,  los  montos  a  pagar,  y  se  enviará  al  cliente  por  el  medio  acordado.  Precondición:  El  servicio  debe  haber  sido  completado  satisfactoriamente.  El  Ejecutivo  de  Ventas  debe  estar  autenticado  en  el  sistema.  La  información  del  cliente  y  del  servicio  debe  estar  registrada  en  el  sistema.  Flujo  Principal:   
+ 
+
+--- PÁGINA 30 ---
+ 
+ 
+1.  El  Ejecutivo  de  Ventas  selecciona  la  opción  "Elaborar  Nota  de  Pedido  de  Servicios"  en  el  sistema.  2.  El  sistema  muestra  un  formulario  para  registrar  los  datos  de  la  nota  de  pedido.  3.  El  Ejecutivo  de  Ventas  ingresa  la  información  requerida:  ○  Datos  del  cliente.  ○  Detalles  del  servicio.  ○  Monto  total  a  pagar.  ○  Número  de  cuenta  bancaria  de  la  empresa  4.  El  sistema  valida  la  información  ingresada.  5.  El  Ejecutivo  de  Ventas  revisa  y  confirma  los  datos.  6.  El  sistema  genera  la  Nota  de  Pedido  de  Servicios  con  un  número  único  de  identificación.  7.  El  sistema  envía  la  Nota  de  Pedido  al  cliente  por  el  medio  acordado.  8.  El  sistema  registra  la  Nota  de  Pedido  en  el  historial  de  servicios.  Post-condición  :  La  Nota  de  Pedido  de  Servicios  queda  registrada  en  el  sistema  con  un  estado  "Pendiente  de  Pago".  El  cliente  recibe  la  Nota  de  Pedido  para  proceder  al  pago  del  servicio.  Flujo  Alterno  1  6.1  Información  incompleta:  1.  Si  el  Ejecutivo  de  Ventas  no  ingresa  toda  la  información  requerida,  el  sistema  muestra  un  mensaje  de  error  indicando  los  campos  faltantes.  2.  El  Ejecutivo  de  Ventas  completa  los  datos  y  continúa  con  el  proceso.  Flujo  Alterno  2  6.2  Error  en  el  envío  al  cliente:  1.  Si  el  sistema  no  puede  enviar  la  Nota  de  Pedido  al  cliente,  muestra  un  mensaje  de  error  y  permite  reintentar  el  envío  o  guardar  el  documento  para  enviarlo  manualmente.   ID:  CUS-08  Caso  de  Uso:  Registrar  Pago  Actor:  Ejecutivo  de  Ventas  Descripción:  El  ejecutivo  de  ventas  registra  el  pago  en  el  sistema.  Precondición:  El  usuario  ha  sido  admitido  al  sistema  con  el  rol  de  Ejecutivo  de  Ventas  y  la  proforma  debe  estar  registrada  en  el  sistema.  Flujo  Principal:   
+ 
+
+--- PÁGINA 31 ---
+ 
+ 
+1.  El  CUS  empieza  cuando  el  Ejecutivo  de  ventas  selecciona  la  pestaña  ”Ventas”  en  la  interfaz  Menú  Principal.  2.  El  sistema  muestra  la  interfaz  Menú  Principal  y  el  Ejecutivo  de  ventas  pulsa  la  opción  “Registrar  Pago”.  3.  El  sistema  muestra  la  interfaz  “Registrar  Pago”,  el  sistema  presenta  un  campo  de  búsqueda  titulado  Cliente  y  un  botón  Buscar.  4.  El  ejecutivo  de  ventas  escribe  el  dni  del  cliente  y  pulsa  buscar.  5.  El  sistema  busca  y  verifica  que  el  dni  se  encuentre  registrado  en  la  tabla  Clientes  que  se  encuentra  en  la  base  de  datos.  6.  El  sistema  obtiene  la  lista  de  proformas  asociadas  al  cliente  seleccionado  y  los  muestra  en  un  campo  titulado  Proformas.  7.  El  Ejecutivo  de  ventas  selecciona  la  proforma  a  la  que  desea  registrar  el  pago.  8.  El  sistema  muestra  los  detalles  de  la  proforma  seleccionada  y  presenta  un  botón  Añadir  comprobante  de  pago.  9.  El  ejecutivo  de  ventas  pulsa  Añadir  comprobante  de  pago.  10.  El  sistema  muestra  un  campo  para  ubicar  el  archivo  que  contiene  el  comprobante  de  pago,  un  campo  Vista  Previa,  y  los  botones  Buscar  comprobante  de  pago,  Guardar  y  Cancelar.  11.  El  ejecutivo  de  ventas  pulsa  Buscar  comprobante  de  pago.  12.  El  sistema  abre  la  interfaz  Ventana  Explorador.  13.  El  ejecutivo  de  ventas  navega  a  la  ubicación  del  archivo  que  contiene  la  boleta  de  pago.  14.  El  ejecutivo  de  ventas  selecciona  el  archivo  de  la  boleta  y  pulsa  Abrir.  15.  El  sistema  verifica  que  el  archivo  seleccionado  cumple  con  el  formato  esperado  (  PDF).  16.  El  sistema  obtiene  la  dirección  del  archivo  y  muestra  una  vista  previa  de  la  boleta  en  la  interfaz  Añadir  comprobante  de  pago.  17.  El  ejecutivo  de  ventas  revisa  la  vista  previa  y  pulsa  Guardar.  18.  El  sistema  guarda  la  dirección  del  archivo  de  la  boleta  en  la  base  de  datos,  actualiza  el  estado  de  la  proforma  a   "Pagada"  o  "Pendiente",  y  genera  un  código  único  para  el  registro  del  pago.  19.  El  sistema  muestra  un  mensaje  de  confirmación  indicando  que  el  pago  ha  sido  registrado  exitosamente.  20.  El  CUS  finaliza.  Post-condición  :  La  proforma  se  actualiza  con  el  estado  "Pagada"  o  "Pendiente"  según  corresponda.  El  comprobante  de  pago  queda  registrado  y  asociado  a  la  proforma  para  futuras  consultas.  Flujo  Alterno  1  El  cliente  no  existe  o  no  es  encontrado,  el  sistema  muestra  un  mensaje  de  error  y  el  proceso  se  interrumpe.  
+ 
+
+--- PÁGINA 32 ---
+ 
+ 
+2.  En  el  paso  4  si  el  sistema  no  encuentra  el  cliente,  el  sistema  muestra  un  mensaje  de  error  “Cliente  no  encontrado”  y  continúa  al  paso  3  del  flujo.  Flujo  Alterno  2  Si  el  archivo  seleccionado  no  cumple  con  el  formato  correcto,  el  sistema  muestra  un  mensaje  de  error  solicitando  un  archivo  válido.  3.  En  el  paso  14  si  el  archivo  no  es  el  formato  correcto,  el  sistema  muestra  un  mensaje  de  error  solicitando  un  archivo  válido  y  continúa  al  paso  11  del  flujo.    ID:  CUS-09  Caso  de  Uso:  Autorizar  Entrega  del  Equipo  Actor:  Ejecutivo  de  Ventas  Descripción:  Este  caso  de  uso  describe  el  proceso  mediante  el  cual  el  Ejecutivo  de  Ventas  confirma  el  estado  de  pago  de  una  Nota  de  Pedido  de  Servicios  y  autoriza  la  entrega  del  equipo  al  cliente.  Precondición:  El  Ejecutivo  de  Ventas  debe  estar  autenticado  en  el  sistema.  El  cliente  debe  haber  realizado  el  pago  del  servicio.  La  Nota  de  Pedido  de  Servicios  debe  estar  registrada  en  el  sistema.  El  estado  de  la  Nota  de  Pedido  debe  haberse  actualizado  a  "Pagado"..  Flujo  Principal:   1.  El  ejecutivo  de  ventas  accede  al  sistema  y  busca  la  Nota  de  Pedido  de  Servicios  correspondiente.  2.  El  sistema  muestra  los  detalles  de  la  Nota  de  Pedido,  incluyendo  su  estado  actual.  3.  El  Ejecutivo  de  Ventas  verifica  que  el  estado  de  la  Nota  de  Pedido  sea  "Pagado".  4.  El  Ejecutivo  de  Ventas  selecciona  la  opción  "Autorizar  Entrega  del  Equipo".  5.  El  sistema  registra  la  autorización.  6.  El  sistema  notifica  al  Personal  de  Entrega/Almacén  que  el  equipo  está  autorizado  para  ser  entregado  al  cliente.  7.  El  cliente  se  presenta  en  el  punto  de  entrega  y  recoge  el  equipo.  Post-condición  :  El  equipo  se  entrega  al  cliente  de  manera  correcta  y  queda  registrado  en  el  historial  del  cliente.  Flujo  Alterno  1  6.1  Pago  no  confirmado:  1.  Si  el  estado  de  la  Nota  de  Pedido  no  es  "Pagado",  el  sistema  muestra  un  mensaje  indicando  que  no  se  puede  autorizar  la  entrega.  2.  El  Ejecutivo  de  Ventas  deberá  esperar  a  que  el  cliente  realice  el  pago  y  sea  confirmado.  
+ 
+
+--- PÁGINA 33 ---
+ 
+ 
+Flujo  Alterno  2  6.2  Error  en  el  envío  al  cliente:  1.  Si  el  sistema  no  está  disponible,  el  Ejecutivo  de  Ventas  deberá  generar  una  autorización  manual  y  registrarla  en  el  sistema  posteriormente.    4.8.2  Descripción  de  los  casos  de  uso  relevantes  para  el  paquete  Seguridad   
+ 
+ID  CUS-10  Caso  de  Uso  Gestionar  usuario  Actor  Administrador  del  sistema  Descripción  El  administrador  del  sistema  podrá  añadir,  modificar  y  eliminar  usuarios  en  el  sistema,  así  como  asignarles  roles  específicos  (Asistente  de  Recepción,  Asistente  Técnico,  Ejecutivo  de  Ventas,  Administrador)  Precondición  El  Administrador  ha  iniciado  sesión  en  el  sistema  con  las  credenciales  y  permisos  necesarios.  Flujo  Principal:  Agregar  Usuarios  
+
+--- PÁGINA 34 ---
+ 
+ 
+ 
+1.  El  caso  de  uso  inicia  cuando  el  administrador  selecciona  la  opción  “Gestionar  Usuarios”  en  la  interfaz  del  Menú  principal  2.  El  sistema  muestra  la  interfaz  “Gestión  de  Usuarios”  el  cual  contiene  la  tabla  de  usuarios  actuales  en  el  sistema  con  las  siguientes  columnas:  ID,  Nombre  Completo,  Usuario,  Correo,  Rol  y  Acciones  (botones  de  Modificar  y  Eliminar  para  cada  usuario)  y  un  botón  de  “Agregar  Usuario”  3.  El  administrador  selecciona  la  opción  “Agregar  Usuario”  4.  El  sistema  presenta  los  campos  requeridos  para  la  información  del  nuevo  usuario,  incluyendo:  ●  Nombre  de  usuario  ●  Nombre  completo  ●  Correo  ●  Contraseña  ●  Rol  (Pestaña  desplegable  con  las  siguientes  opciones:  Asistente  de  Recepción,  ejecutivo  de  ventas,  asistente  técnico,  Administrador).  5.  El  administrador  completa  los  campos  con  la  información  correspondiente  del  usuario.  6.  El  administrador  selecciona  la  opción  “Guardar  Usuario”  7.  El  sistema  guarda  la  información  ingresada  en  la  base  de  datos  y  genera  automáticamente  un  id  de  Usuario  único.  8.  El  sistema  muestra  un  mensaje  de  confirmación  indicando  que  el  usuario  ha  sido  registrado  exitosamente.  9.  El  caso  de  uso  finaliza  exitosamente.   Post-condición  :  La  información  del  usuario  se  ha  registrado  en  la  base  de  datos  (añadido,  modificado  o  eliminado)  correctamente  Flujo  Alterno  1:  Modificar  Usuario  
+
+--- PÁGINA 35 ---
+ 
+ 
+ 
+1.  El  caso  de  uso  inicia  cuando  el  administrador  selecciona  la  opción  “Gestionar  Usuarios”  en  la  interfaz  del  Menú  principal  2.  El  sistema  muestra  la  interfaz  “Gestión  de  Usuarios”  el  cual  contiene  la  tabla  de  usuarios  actuales  en  el  sistema  con  las  siguientes  columnas:  ID,  Nombre  Completo,  Usuario,  Correo,  Rol  y  Acciones  (botones  de  Modificar  y  Eliminar  para  cada  usuario)  y  un  botón  de  “Agregar  Usuario”  3.  El  Administrador  selecciona  la  opción  “Modificar”  en  la  fila  del  respectivo  usuario  a  modificar.  4.  El  sistema  presenta  los  campos  pre-llenados  y  editables  del  usuario:  ●  Nombre  de  usuario  ●  Nombre  completo  ●  Correo  ●  Contraseña  ●  Rol  (Pestaña  desplegable  con  las  siguientes  opciones:  Asistente  de  Recepción,  ejecutivo  de  ventas,  asistente  técnico,  Administrador).  5.  El  administrador  modifica  los  campos  necesarios.  6.  El  administrador  selecciona  la  opción  “Guardar  Cambios”  para  aplicar  los  cambios.  7.  El  sistema  actualiza  la  información  del  usuario  en  la  base  de  datos.  8.  El  sistema  muestra  un  mensaje  de  confirmación  indicando  que  la  información  del  usuario  ha  sido  modificada  exitosamente.  9.  El  caso  de  uso  finaliza  exitosamente.  Flujo  Alterno  2:  Eliminar  usuario  
+
+--- PÁGINA 36 ---
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+1.  El  caso  de  uso  inicia  cuando  el  administrador  selecciona  la  pestaña  “Gestión  de  Usuario”  en  la  interfaz  del  Menu  principal.  2.  El  sistema  muestra  la  interfaz  “Gestión  de  Usuarios”  el  cual  contiene  la  tabla  de  usuarios  actuales  en  el  sistema  con  las  siguientes  columnas:  ID,  Nombre  Completo,  Usuario,  Correo,  Rol  y  Acciones  (botones  de  Modificar  y  Eliminar  para  cada  usuario)  y  un  botón  de  “Agregar  Usuario”  3.  El  administrador  selecciona  la  opción  “Eliminar”  en  la  fila  del  respectivo  usuario  a  eliminar.  4.  El  sistema  muestra  una  ventana  emergente  de  confirmación  con  el  mensaje:  “¿Estás  seguro  de  que  deseas  eliminar  al  siguiente  usuario?  Esta  acción  no  puede  deshacerse.”  Además  de  los  detalles  del  usuario  seleccionado  (ID,  Nombre  Completo,  Usuario,  Correo,  Rol)  y  botones  de  Cancelar  y  Eliminar.  5.  El  administrador  selecciona  la  opción  “Eliminar”.  6.  El  sistema  elimina  el  usuario  de  la  base  de  datos  7.  El  sistema  muestra  un  mensaje  de  confirmación  indicando  que  el  usuario  ha  sido  eliminado  exitosamente  8.  El  caso  de  uso  finaliza  exitosamente.   
+ID  CUS-11  Caso  de  Uso  Conexión  al  sistema  Actor  Usuario  
+Descripción  
+Permite  acceder  al  sistema  mediante  la  identificación  segura  de  los  usuarios  y  asignar  el  rol  respectivo.  Precondición  El  usuario  debe  existir  en  el  sistema  y  contar  con  credenciales  válidas.  Flujo  Principal:   
+1.  El  caso  de  uso  inicia  cuando  el  sistema  muestra  la  interfaz  de  acceso  que  contiene  los  campos  rellenables  de  "Usuario"  y  "Contraseña",  además  del  botón  "Iniciar  Sesión"  2.  El  usuario  introduce  su  nombre  de  usuario  y  contraseña.  3.  El  sistema  verifica  que  el  usuario  esté  registrado  y  que  los  campos  no  estén  vacíos.  4.  Si  las  credenciales  son  correctas,  el  sistema  permite  el  acceso  según  su  rol  y  muestra  la  interfaz  correspondiente.  5.  El  usuario  accede  al  sistema.  6.  El  caso  de  uso  finaliza  exitosamente.  
+
+--- PÁGINA 37 ---
+ 
+ 
+ 
+     
+ 
+4.9.  Prototipos  de  interfaz  de  usuarios.  
+4.9.1  Prototipos  de  interfaz  de  usuarios  del  paquete  Atención  al  Cliente  
+●  CUS-01:  Gestionar  clientes  
+  ●  CUS-02:Gestionar  Orden  de  Trabajo  
+ 
+Post-condición  :  
+El  usuario  accede  correctamente  al  sistema,  se  registra  el  inicio  de  sesión  y  se  le  asigna  un  rol  al  usuario  
+Flujo  Alterno  1:  Si  los  datos  ingresados  son  erróneos:  4.1.  El  sistema  muestra  un  mensaje  de  error  indicando  que  las  credenciales  son  incorrectas.  4.2.  El  sistema  permite  al  usuario  intentar  ingresar  nuevamente  su  nombre  de  usuario  y  contraseña.  4.4.  El  caso  de  uso  finaliza.  
+
+
+--- PÁGINA 38 ---
+ 
+ 
+ ●  CUS-03:  Visualizar  Guia  de  Remision  
+  ●  CUS-04:  Visualizar  Orden  de  Trabajo  
+ 
+
+
+--- PÁGINA 39 ---
+ 
+ 
+  ●  CUS-05:  Elaborar  Informe  de  Diagnóstico  
+  
+4.9.2  Prototipos  de  interfaz  de  usuarios  del  paquete  Ventas  
+ 
+
+
+--- PÁGINA 40 ---
+ 
+ 
+●  CUS-06:  Gestionar  Proforma  de  servicios  
+ 
+●  CUS-07:  Elaborar  Nota  de  Servicios  
+ 
+ 
+
+
+--- PÁGINA 41 ---
+ 
+ 
+●  CUS-08:  Registrar  Pago  
+ 
+●  CUS-09:  Autorizar  Entrega  del  Equipo  
+ 
+4.9.3  Prototipos  de  interfaz  de  usuarios  del  paquete  Seguridad  
+ 
+
+
+--- PÁGINA 42 ---
+ 
+ 
+●  CUS-10  :  GESTIONAR  USUARIO  
+ 
+●  CUS-11  :  CONEXIÓN  AL  SISTEMA  
+   
+ 
+
+
+--- PÁGINA 43 ---
+ 
+ 
+   
+4.10  Sección  de  restricciones  
+4.10.1  Normativas  
+➢  Licenciamiento  
+Actualmente,  no  existe  una  regulación  específica  de  licenciamiento  para  el  Sistema  
+de
+ 
+Calibración
+ 
+y
+ 
+Servicio
+ 
+Técnico
+ 
+en
+ 
+el
+ 
+país
+ 
+donde
+ 
+opera
+ 
+Promecal.
+ 
+En
+ 
+cuanto
+ 
+al
+ 
+software
+ 
+empleado,
+ 
+no
+ 
+se
+ 
+requiere
+ 
+licencia
+ 
+para
+ 
+utilizar
+ 
+la
+ 
+versión
+ 
+Community
+ 
+de
+ 
+IntelliJ
+ 
+IDEA,
+ 
+ya
+ 
+que
+ 
+es
+ 
+gratuita.
+ 
+Para
+ 
+la
+ 
+administración
+ 
+de
+ 
+bases
+ 
+de
+ 
+datos,
+ 
+se
+ 
+ha
+ 
+seleccionado
+ 
+Microsoft
+ 
+SQL
+ 
+Server,
+ 
+que
+ 
+cuenta
+ 
+con
+ 
+la
+ 
+respectiva
+ 
+licencia
+ 
+adquirida
+ 
+por
+ 
+la
+ 
+empresa.
+ 
+4.10.2  Estándares  
+➢  UML  
+Todos  los  documentos  de  comunicación  y  documentación  necesarios  para  el  
+desarrollo
+ 
+del
+ 
+subsistema
+ 
+de
+ 
+Recepción
+ 
+están
+ 
+basados
+ 
+en
+ 
+el
+ 
+Lenguaje
+ 
+de
+ 
+Modelado
+ 
+Unificado
+ 
+(UML).
+ 
+Esto
+ 
+garantiza
+ 
+una
+ 
+comprensión
+ 
+clara
+ 
+entre
+ 
+los
+ 
+miembros
+ 
+del
+ 
+equipo
+ 
+de
+ 
+desarrollo
+ 
+y
+ 
+asegura
+ 
+la
+ 
+consistencia
+ 
+en
+ 
+la
+ 
+documentación
+ 
+del
+ 
+sistema.
+ 
+4.10.3  Tecnología  
+➢  Lenguaje  de  programación  y  entorno  de  desarrollo  
+El
+ 
+subsistema
+ 
+de
+ 
+Recepción
+ 
+se
+ 
+desarrollará
+ 
+en
+ 
+Java,
+ 
+utilizando
+ 
+como
+ 
+entorno
+ 
+de
+ 
+desarrollo
+ 
+IntelliJ
+ 
+IDEA.
+ 
+Este
+ 
+entorno
+ 
+ofrece
+ 
+la
+ 
+flexibilidad
+ 
+y
+ 
+escalabilidad
+ 
+necesarias
+ 
+para
+ 
+los
+ 
+requerimientos
+ 
+de
+ 
+Promecal.
+ ➢  Base  de  datos  
+Microsoft
+ 
+SQL
+ 
+Server
+ 
+será
+ 
+el
+ 
+sistema
+ 
+de
+ 
+base
+ 
+de
+ 
+datos
+ 
+elegido,
+ 
+ofreciendo
+ 
+robustez
+ 
+y
+ 
+seguridad
+ 
+en
+ 
+la
+ 
+administración
+ 
+de
+ 
+los
+ 
+datos.
+ 
+ 
+
+--- PÁGINA 44 ---
+ 
+ 
+➢  Herramientas  de  modelado  
+Para
+ 
+el
+ 
+modelado
+ 
+y
+ 
+documentación
+ 
+del
+ 
+sistema,
+ 
+se
+ 
+emplearán
+ 
+Rational
+ 
+Rose
+ 
+para
+ 
+los
+ 
+diagramas
+ 
+de
+ 
+arquitectura
+ 
+y
+ 
+Bizagi
+ 
+Modeler
+ 
+para
+ 
+el
+ 
+modelado
+ 
+de
+ 
+procesos.
+ 
+4.10.4  Soporte  
+El  subsistema  de  Recepción  se  mantendrá  actualizado  de  forma  continua,  permitiendo  
+cambios
+ 
+y
+ 
+mejoras
+ 
+periódicas
+ 
+que
+ 
+incorporen
+ 
+nuevas
+ 
+funcionalidades
+ 
+o
+ 
+ajusten
+ 
+la
+ 
+interacción
+ 
+entre
+ 
+el
+ 
+usuario
+ 
+y
+ 
+el
+ 
+sistema.
+ 
+Este
+ 
+enfoque
+ 
+de
+ 
+mantenimiento
+ 
+progresivo
+ 
+permitirá
+ 
+que
+ 
+el
+ 
+sistema
+ 
+evolucione
+ 
+conforme
+ 
+a
+ 
+las
+ 
+necesidades
+ 
+de
+ 
+Promecal,
+ 
+manteniendo
+ 
+su
+ 
+eficiencia
+ 
+en
+ 
+la
+ 
+prestación
+ 
+de
+ 
+servicios
+ 
+de
+ 
+calibración
+ 
+y
+ 
+soporte
+ 
+técnico.
+ 
+4.11  Sección  de  QoS  
+4.11.1  Usabilidad  
+Las  interfaces  del  subsistema  de  Recepción  en  el  Sistema  de  Calibración  y  Servicio  
+Técnico
+ 
+de
+ 
+Promecal
+ 
+han
+ 
+sido
+ 
+diseñadas
+ 
+para
+ 
+facilitar
+ 
+su
+ 
+uso,
+ 
+presentando
+ 
+gráficos
+ 
+y
+ 
+elementos
+ 
+visuales
+ 
+que
+ 
+mejoren
+ 
+la
+ 
+comprensión
+ 
+de
+ 
+los
+ 
+usuarios.
+ 
+Al
+ 
+estar
+ 
+orientado
+ 
+exclusivamente
+ 
+a
+ 
+los
+ 
+empleados
+ 
+de
+ 
+Promecal,
+ 
+su
+ 
+interfaz
+ 
+está
+ 
+adaptada
+ 
+para
+ 
+cumplir
+ 
+con
+ 
+los
+ 
+procesos
+ 
+internos
+ 
+de
+ 
+la
+ 
+empresa.
+ 
+ 
+4.11.2  Eficiencia  
+El  sistema  está  optimizado  para  brindar  respuestas  rápidas,  con  tiempos  de  procesamiento  
+que
+ 
+no
+ 
+excedan
+ 
+un
+ 
+segundo,
+ 
+dado
+ 
+que
+ 
+no
+ 
+requiere
+ 
+conexión
+ 
+a
+ 
+internet
+ 
+y
+ 
+se
+ 
+limita
+ 
+a
+ 
+operaciones
+ 
+de
+ 
+inserción,
+ 
+modificación
+ 
+y
+ 
+eliminación
+ 
+de
+ 
+datos
+ 
+(CRUD).
+ 
+Además,
+ 
+el
+ 
+número
+ 
+de
+ 
+usuarios
+ 
+concurrentes
+ 
+es
+ 
+reducido,
+ 
+lo
+ 
+cual
+ 
+asegura
+ 
+un
+ 
+desempeño
+ 
+ágil,
+ 
+dependiendo
+ 
+únicamente
+ 
+de
+ 
+las
+ 
+capacidades
+ 
+del
+ 
+equipo
+ 
+donde
+ 
+el
+ 
+sistema
+ 
+esté
+ 
+instalado.
+ 
+4.11.3  Seguridad  
+El  sistema  aplica  controles  de  acceso  basados  en  perfiles  de  usuario  (por  ejemplo,  
+Recepcionista,
+ 
+Técnico,
+ 
+y
+ 
+Administrador),
+ 
+cada
+ 
+uno
+ 
+con
+ 
+diferentes
+ 
+niveles
+ 
+de
+ 
+permisos.
+ 
+El
+ 
+ 
+
+--- PÁGINA 45 ---
+ 
+ 
+acceso  se  valida  mediante  usuario  y  contraseña,  y  todas  las  acciones  realizadas  se  registran  
+en
+ 
+un
+ 
+historial
+ 
+que
+ 
+incluye
+ 
+información
+ 
+personal
+ 
+del
+ 
+usuario
+ 
+para
+ 
+mantener
+ 
+trazabilidad.
+ 
+Además,
+ 
+la
+ 
+base
+ 
+de
+ 
+datos
+ 
+de
+ 
+Microsoft
+ 
+SQL
+ 
+Server
+ 
+restringe
+ 
+el
+ 
+acceso,
+ 
+permitiendo
+ 
+únicamente
+ 
+a
+ 
+usuarios
+ 
+autenticados
+ 
+interactuar
+ 
+con
+ 
+los
+ 
+datos,
+ 
+brindando
+ 
+una
+ 
+capa
+ 
+adicional
+ 
+de
+ 
+seguridad.
+ 
+4.11.4  Confiabilidad  
+El  sistema  valida  todos  los  datos  ingresados  y,  en  caso  de  error,  proporciona  mensajes  de  
+ayuda
+ 
+con
+ 
+posibles
+ 
+soluciones.
+ 
+Los
+ 
+formularios
+ 
+limitan
+ 
+el
+ 
+ingreso
+ 
+de
+ 
+ciertos
+ 
+caracteres,
+ 
+asegurando
+ 
+que
+ 
+los
+ 
+datos
+ 
+se
+ 
+almacenen
+ 
+correctamente.
+ 
+En
+ 
+caso
+ 
+de
+ 
+producirse
+ 
+errores
+ 
+en
+ 
+el
+ 
+sistema,
+ 
+se
+ 
+muestran
+ 
+mensajes
+ 
+de
+ 
+error
+ 
+detallados
+ 
+para
+ 
+que
+ 
+los
+ 
+usuarios
+ 
+puedan
+ 
+tomar
+ 
+medidas
+ 
+correctivas
+ 
+oportunas.
+ 
+4.11.5  Mantenimiento  
+El  sistema  recibirá  mantenimiento  de  acuerdo  con  las  necesidades  de  Promecal  y  posibles  
+problemas
+ 
+no
+ 
+identificados
+ 
+previamente.
+ 
+Dado
+ 
+que
+ 
+el
+ 
+sistema
+ 
+no
+ 
+es
+ 
+de
+ 
+gran
+ 
+envergadura
+ 
+y
+ 
+está
+ 
+orientado
+ 
+a
+ 
+escritorio,
+ 
+el
+ 
+mantenimiento
+ 
+no
+ 
+presentará
+ 
+complicaciones,
+ 
+incluso
+ 
+si
+ 
+el
+ 
+equipo
+ 
+de
+ 
+desarrollo
+ 
+cambia.
+ 
+Además,
+ 
+el
+ 
+código
+ 
+ha
+ 
+sido
+ 
+estructurado
+ 
+de
+ 
+manera
+ 
+modular
+ 
+para
+ 
+facilitar
+ 
+futuras
+ 
+actualizaciones
+ 
+o
+ 
+modificaciones.
+ 
+4.11.6  Estándares  
+Se  aplicará  un  estándar  de  diseño  uniforme  en  todas  las  ventanas  e  interfaces  del  sistema,  
+manteniendo
+ 
+coherencia
+ 
+visual
+ 
+y
+ 
+funcional.
+ 
+Además,
+ 
+se
+ 
+establecerán
+ 
+convenciones
+ 
+de
+ 
+nomenclatura
+ 
+para
+ 
+formularios,
+ 
+clases,
+ 
+variables
+ 
+y
+ 
+métodos,
+ 
+lo
+ 
+cual
+ 
+facilitará
+ 
+la
+ 
+comprensión
+ 
+y
+ 
+el
+ 
+mantenimiento
+ 
+del
+ 
+código
+ 
+por
+ 
+parte
+ 
+del
+ 
+equipo
+ 
+de
+ 
+desarrollo.
+ 
+ 
+ 
+ 
+
+--- PÁGINA 46 ---
+ 
+ 
+5.  Vista  Lógica  
+5.1.  Estilo  arquitectónico  
+Para  este  proyecto,  se  ha  adoptado  una  arquitectura  en  tres  capas  (Presentación,  Aplicación  y  
+Persistencia)
+ 
+con
+ 
+el
+ 
+objetivo
+ 
+de
+ 
+garantizar
+ 
+una
+ 
+solución
+ 
+escalable,
+ 
+modular
+ 
+y
+ 
+mantenible
+ 
+a
+ 
+largo
+ 
+plazo.
+ 
+Esta
+ 
+elección
+ 
+responde
+ 
+a
+ 
+la
+ 
+necesidad
+ 
+de
+ 
+estructurar
+ 
+el
+ 
+sistema
+ 
+de
+ 
+manera
+ 
+que
+ 
+cada
+ 
+capa
+ 
+tenga
+ 
+responsabilidades
+ 
+bien
+ 
+definidas,
+ 
+promoviendo
+ 
+la
+ 
+independencia
+ 
+y
+ 
+flexibilidad
+ 
+en
+ 
+el
+ 
+desarrollo
+ 
+y
+ 
+mantenimiento
+ 
+del
+ 
+software.
+ 
+El  uso  de  esta  arquitectura  permite  que  los  cambios  en  una  capa  no  afecten  el  funcionamiento  de  las  
+demás,
+ 
+lo
+ 
+que
+ 
+facilita
+ 
+la
+ 
+evolución
+ 
+del
+ 
+sistema
+ 
+sin
+ 
+comprometer
+ 
+su
+ 
+estabilidad.
+ 
+Gracias
+ 
+a
+ 
+esta
+ 
+separación
+ 
+de
+ 
+responsabilidades,
+ 
+es
+ 
+posible
+ 
+optimizar
+ 
+el
+ 
+rendimiento
+ 
+de
+ 
+cada
+ 
+capa
+ 
+de
+ 
+forma
+ 
+aislada,
+ 
+realizar
+ 
+pruebas
+ 
+unitarias
+ 
+con
+ 
+mayor
+ 
+eficacia
+ 
+y
+ 
+garantizar
+ 
+una
+ 
+mejor
+ 
+distribución
+ 
+de
+ 
+carga
+ 
+en
+ 
+caso
+ 
+de
+ 
+futuras
+ 
+integraciones
+ 
+con
+ 
+otros
+ 
+sistemas
+ 
+o
+ 
+servicios.
+ 
+ 
+5.1.1  Capa  de  Presentación  
+La  capa  de  presentación  está  formada  por  un  conjunto  de  componentes  de  software  que  facilitan  la  
+ 
+
+
+--- PÁGINA 47 ---
+ 
+ 
+interacción  del  usuario  con  el  sistema  a  través  de  una  interfaz  visual  intuitiva.  Su  principal  función  es  
+permitir
+ 
+el
+ 
+acceso
+ 
+y
+ 
+gestión
+ 
+de
+ 
+datos,
+ 
+asegurando
+ 
+que
+ 
+la
+ 
+información
+ 
+se
+ 
+muestre
+ 
+de
+ 
+manera
+ 
+clara
+ 
+y
+ 
+estructurada.
+ A  través  de  esta  capa,  los  usuarios  pueden  navegar  por  las  diferentes  secciones  de  la  aplicación,  visualizar  
+información
+ 
+relevante
+ 
+y
+ 
+ejecutar
+ 
+acciones
+ 
+dentro
+ 
+del
+ 
+sistema.
+ 
+Además,
+ 
+gestiona
+ 
+la
+ 
+validación
+ 
+inicial
+ 
+de
+ 
+los
+ 
+datos
+ 
+ingresados,
+ 
+evitando
+ 
+errores
+ 
+antes
+ 
+de
+ 
+enviarlos
+ 
+a
+ 
+la
+ 
+capa
+ 
+de
+ 
+aplicación.
+ Esta  capa  actúa  como  puente  entre  el  usuario  y  la  lógica  del  sistema,  enviando  solicitudes  y  recibiendo  
+respuestas
+ 
+en
+ 
+un
+ 
+formato
+ 
+comprensible.
+ 
+Su
+ 
+implementación
+ 
+puede
+ 
+basarse
+ 
+en
+ 
+tecnologías
+ 
+como
+ 
+HTML,
+ 
+CSS,
+ 
+JavaScript
+ 
+o
+ 
+Angular,
+ 
+dependiendo
+ 
+de
+ 
+la
+ 
+naturaleza
+ 
+del
+ 
+proyecto.
+ 
+5.1.2  Capa  de  Lógica  de  la  aplicación  
+La  capa  de  negocio  es  la  encargada  de  gestionar  la  lógica  del  Sistema  de  Atención  de  Pedidos  (SAP),  
+asegurando
+ 
+que
+ 
+los
+ 
+procesos
+ 
+de
+ 
+gestión
+ 
+de
+ 
+pedidos,
+ 
+calibración
+ 
+de
+ 
+equipos,
+ 
+soporte
+ 
+técnico
+ 
+y
+ 
+ventas
+ 
+se
+ 
+ejecuten
+ 
+correctamente.
+ Funciona  como  un  intermediario  entre  la  presentación  y  la  persistencia,  procesando  solicitudes  de  la  
+interfaz
+ 
+de
+ 
+usuario
+ 
+y
+ 
+gestionando
+ 
+la
+ 
+comunicación
+ 
+con
+ 
+la
+ 
+base
+ 
+de
+ 
+datos.
+ 
+Por
+ 
+ejemplo,
+ 
+cuando
+ 
+un
+ 
+ejecutivo
+ 
+de
+ 
+ventas
+ 
+genera
+ 
+una
+ 
+proforma
+ 
+o
+ 
+un
+ 
+asistente
+ 
+técnico
+ 
+registra
+ 
+una
+ 
+orden
+ 
+de
+ 
+trabajo,
+ 
+esta
+ 
+capa
+ 
+valida
+ 
+la
+ 
+información
+ 
+y
+ 
+aplica
+ 
+las
+ 
+reglas
+ 
+del
+ 
+sistema
+ 
+antes
+ 
+de
+ 
+almacenarla.
+ 
+5.1.3  Capa  de  Persistencia  o  de  datos  
+La  capa  de  persistencia  se  encarga  de  gestionar  el  almacenamiento  y  recuperación  de  datos  en  el  Sistema  
+de
+ 
+Atención
+ 
+de
+ 
+Pedidos
+ 
+(SAP),
+ 
+permitiendo
+ 
+que
+ 
+los
+ 
+objetos
+ 
+del
+ 
+dominio
+ 
+interactúen
+ 
+con
+ 
+la
+ 
+base
+ 
+de
+ 
+datos
+ 
+de
+ 
+manera
+ 
+eficiente
+ 
+y
+ 
+segura.
+ Esta  capa  maneja  la  comunicación  con  las  tablas  clave  del  sistema,  como  Clientes,  Órdenes  de  Trabajo,  
+Proformas
+ 
+y
+ 
+Certificados
+ 
+de
+ 
+Calibración,
+ 
+asegurando
+ 
+la
+ 
+integridad
+ 
+de
+ 
+la
+ 
+información
+ 
+mediante
+ 
+operaciones
+ 
+CRUD
+ 
+(Crear,
+ 
+Leer,
+ 
+Actualizar
+ 
+y
+ 
+Eliminar).
+ Al  estar  separada  de  la  lógica  de  negocio,  permite  cambios  en  la  estructura  de  datos  sin  afectar  al  resto  del  
+sistema,
+ 
+facilitando
+ 
+la
+ 
+mantenibilidad
+ 
+y
+ 
+escalabilidad
+ 
+de
+ 
+la
+ 
+aplicación.
+ 
+ 
+ 
+
+--- PÁGINA 48 ---
+ 
+ 
+5.2  Arquitectura  lógica  de  la  aplicación  
+5.2.1  Visión  general  
+ 
+5.2.2  Identificando  las  Interfaces  entre  capas  
+ 
+ 
+
+
+--- PÁGINA 49 ---
+ 
+ 
+5.3  Identificación  de  las  clases  del  diseño  
+5.3.1  Diagramas  de  secuencias  del  paquete  Atención  al  Cliente  
+●  CUS-01:  Gestionar  clientes  
+○  Primer  escenario:  Añadir  Cliente  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+--- PÁGINA 50 ---
+ 
+ 
+ 
+ 
+○  Segundo  escenario:  Modificar  Cliente  
+      
+ 
+
+
+--- PÁGINA 51 ---
+ 
+ 
+  
+○  Tercer  escenario:  Eliminar  Cliente  
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+--- PÁGINA 52 ---
+ 
+ 
+ 
+ 
+●  CUS-02:  Gestionar  Orden  de  Trabajo  
+○  Primer  escenario:  Añadir  Orden  de  Trabajo  
+ 
+ 
+ 
+ 
+ 
+
+
+--- PÁGINA 53 ---
+ 
+ 
+ 
+ 
+○  Segundo  escenario:  Editar  Orden  de  Trabajo  
+ 
+ 
+
+
+--- PÁGINA 54 ---
+ 
+ 
+ 
+○  Tercer  escenario:  Eliminar  Orden  de  Trabajo  
+ 
+ 
+
+
+--- PÁGINA 55 ---
+ 
+ 
+ 
+●  CUS-03:  Visualizar  Guía  de  Remisión  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+--- PÁGINA 56 ---
+ 
+ 
+●  CUS-04:  Visualizar  orden  de  trabajo  
+ 
+ 
+
+
+--- PÁGINA 57 ---
+ 
+ 
+●  CUS-05:  Elaborar  informe  de  diagnóstico  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+--- PÁGINA 58 ---
+ 
+ 
+5.3.2  Diagramas  de  secuencias  del  paquete  Ventas  
+●  CUS-06:  Gestionar  Proforma  de  servicios  
+○  Primer  escenario:  Añadir  Proforma  
+ 
+ 
+
+
+--- PÁGINA 59 ---
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+--- PÁGINA 60 ---
+ 
+ 
+○  Segundo  escenario:  Modificar  Proforma  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+--- PÁGINA 61 ---
+ 
+ 
+○  Tercer  escenario:  Eliminar  Proforma  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+--- PÁGINA 62 ---
+ 
+ 
+●  CUS-07:  Elaborar  Nota  de  Pedido  de  Servicios  
+ 
+            
+ 
+
+
+--- PÁGINA 63 ---
+ 
+ 
+●  CUS-08:  Registrar  Pago  
+ 
+ 
+
+
+--- PÁGINA 64 ---
+ 
+ 
+●  CUS-09:  Autorizar  Entrega  del  Equipo  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+--- PÁGINA 65 ---
+ 
+ 
+5.3.3  Diagramas  de  secuencias  del  paquete  Seguridad  
+●  CUS-10  :  GESTIONAR  USUARIO  
+○  Primer  escenario:  Añadir  usuario  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+--- PÁGINA 66 ---
+ 
+ 
+○  Segundo  escenario:  Eliminar  usuario  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+--- PÁGINA 67 ---
+ 
+ 
+○  Tercer  escenario:  Modificar  usuario  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+--- PÁGINA 68 ---
+ 
+ 
+●  CUS-11  :  CONEXIÓN  AL  SISTEMA  
+○  Primer  escenario:  Ingreso  exitoso  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+--- PÁGINA 69 ---
+ 
+ 
+○  Segundo  escenario:  Datos  inválidos  enviados  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+--- PÁGINA 70 ---
+ 
+ 
+5.3.3  Diagrama  de  subsistemas  
+ 
+5.3.4  Agrupación  de  las  clases  de  diseño  en  Subsistema  del  paquete  Gestión  de  Equipos  
+➢  Subsistema  Gestión  de  Orden  de  Trabajo  Clases:  
+●  Interfaz  Menú  Principal  ●  Interfaz  Orden  de  Trabajo  ●  Interfaz  Añadir  Orden  de  Trabajo  ●  Interfaz  Editar  Orden  de  Trabajo  ●  Interfaz  Eliminar  Orden  de  Trabajo  ●  Interfaz  Órdenes  de  Trabajo  ●  Interfaz  Informe  Diagnóstico  ●  Gestor  Controlador  Órdenes  ●  Gestor  Orden  de  Trabajo  ●  Gestor  de  Órdenes  ●  Gestor  Controlador  Informe  ●  Gestor  Informe  ●  Orden  de  Trabajo  
+ 
+
+
+--- PÁGINA 71 ---
+ 
+ 
+●  Diagnóstico  ➢  Subsistema  Gestión  de  Clientes  
+Clases:  
+●  Interfaz  Menú  Principal  ●  Interfaz  Gestionar  Clientes  ●  Interfaz  Añadir  Clientes  ●  Interfaz  Modificar  Clientes  ●  Interfaz  Eliminar  Clientes  ●  Gestor  de  Añadir  Clientes  ●  Gestor  de  Modificar  Clientes  ●  Gestor  de  Eliminar  Clientes  ●  Cliente  ●  Gestor  Nota  Pedido  Servicios  
+5.3.4.1  Diagrama  de  clases  de  diseño  del  subsistema  Gestión  de  Orden  de  Trabajo  
+5.3.4.1.1  Asignación  de  Operaciones  
+Clase  :  Interfaz  Orden  de  Trabajo  
+RESPONSABILIDADES  COLABORACIONES  
+Hace  un  llamado  a  la  interfaz  Orden  de  Trabajo  
+Clase  :  Interfaz  Principal  
+ 
+Clase  :  Interfaz  Añadir  Orden  de  Trabajo  
+RESPONSABILIDADES  COLABORACIONES  
+Hace  un  llamado  a  la  interfaz  Añadir  Orden  de  Trabajo  
+Clase  :Interfaz  Orden  de  Trabajo  
+ 
+ 
+
+--- PÁGINA 72 ---
+ 
+ 
+Clase  :  Interfaz  Modificar  Orden  de  Trabajo  
+RESPONSABILIDADES  COLABORACIONES  
+Hace  un  llamado  a  la  interfaz  Modificar  Orden  de  Trabajo  
+Clase  :Interfaz  Orden  de  Trabajo  
+ 
+Clase  :  Interfaz  Eliminar  Orden  de  Trabajo  
+RESPONSABILIDADES  COLABORACIONES  
+Hace  un  llamado  a  la  interfaz  Eliminar  Orden  de  Trabajo  
+Clase  :Interfaz  Orden  de  Trabajo  
+ 
+Clase  :  Interfaz  Informe  Diagnóstico  
+RESPONSABILIDADES  COLABORACIONES  
+Hace  un  llamado  a  la  interfaz  Informe  Diagnóstico  
+Clase  :Interfaz  Menú  principal  
+ 
+Clase  :  Interfaz  Órdenes  de  Trabajo  
+RESPONSABILIDADES  COLABORACIONES  
+Hace  un  llamado  a  la  interfaz  Órdenes  de  Trabajo  
+Clase  :  Interfaz  Principal  
+ 
+Clase  :  Gestor  Controlador  Ordenes  
+RESPONSABILIDADES  COLABORACIONES  
+Obtener  la  lista  de  órdenes  pendientes.   
+Clase:  Interfaz  Ordenes  de  Trabajo,  Gestor  de  Ordenes,  Orden  de  Trabajo  
+ 
+
+--- PÁGINA 73 ---
+ 
+ 
+Aplicar  filtros  y  búsquedas  sobre  las  órdenes  de  trabajo.  
+Clase:  Interfaz  Ordenes  de  Trabajo,  Gestor  de  Ordenes  
+Actualizar  el  estado  de  la  orden  de  trabajo  a  "En  diagnóstico"  o  "Completado"  según  corresponda.  
+Clase:  Interfaz  Ordenes  de  Trabajo,  Gestor  de  Ordenes,  Orden  de  Trabajo,  Gestor  Orden  de  Trabajo  
+ 
+Clase  :  Gestor  Orden  de  Trabajo  
+RESPONSABILIDADES  COLABORACIONES  
+Validar  los  datos  de  una  nueva  orden  de  trabajo.  
+Clase:  Interfaz  Añadir  Orden  de  Trabajo,  Orden  de  Trabajo  
+Guardar  una  nueva  orden  en  la  base  de  datos.  
+Clase:  Interfaz  Añadir  Orden  de  Trabajo,  Orden  de  Trabajo  
+Obtener  la  lista  de  órdenes  de  trabajo  existentes.  
+Clase:  Orden  de  Trabajo,  Interfaz  Orden  de  Trabajo.  
+Editar  la  información  de  una  orden  de  trabajo  en  la  base  de  datos.  
+Clase:  Interfaz  Editar  Orden  de  Trabajo,  Orden  de  Trabajo  
+Eliminar  una  orden  de  trabajo  de  la  base  de  datos.  
+Clase:  Interfaz  Eliminar  Orden  de  Trabajo,  Orden  de  Trabajo  
+ 
+Clase  :  Gestor  de  Ordenes  
+RESPONSABILIDADES  COLABORACIONES  
+Consultar  y  devolver  la  lista  de  órdenes  de  trabajo.  
+Clase:  Interfaz  Ordenes  de  Trabajo,  Orden  de  Trabajo.  
+Obtener  detalles  completos  de  una  orden  específica.  
+Clase:  Orden  de  Trabajo,  Interfaz  Ordenes  de  Trabajo  
+Generar  un  archivo  PDF  de  la  orden  de  trabajo  para  descargar  o  imprimir.  
+Clase:  Orden  de  Trabajo,  Interfaz  Ordenes  de  Trabajo  
+ 
+ 
+
+--- PÁGINA 74 ---
+ 
+ 
+Clase  :  Gestor  Controlador  Informe  
+RESPONSABILIDADES  COLABORACIONES  
+Obtener  los  datos  de  la  orden  de  trabajo  necesaria  para  el  diagnóstico.  
+Clase:  Gestor  Informe,  Orden  de  Trabajo  
+Validar  el  contenido  del  informe  de  diagnóstico.  
+Clase:  Gestor  Informe  
+Enviar  el  informe  de  diagnóstico  al  ejecutivo  de  ventas.  
+Clase:  Gestor  Informe  
+ 
+ 
+Clase  :  Gestor  Informe  
+RESPONSABILIDADES  COLABORACIONES  
+Crear  el  archivo  PDF  del  informe  de  diagnóstico.  
+Clase:  Interfaz  Informe  Diagnóstico,  Diagnóstico.  
+Guardar  el  informe  de  diagnóstico  en  la  base  de  datos.  
+Clase:  Orden  de  Trabajo,  Diagnóstico  
+Enviar  el  informe  por  correo  electrónico  al  ejecutivo  de  ventas.  
+Clase:  Diagnóstico,  Interfaz  Informe  Diagnóstico  
+ 
+Clase  :  Orden  de  Trabajo  
+RESPONSABILIDADES  COLABORACIONES  
+Representar  la  información  de  una  orden  de  trabajo.  
+Clase:  Interfaz  Ordenes  de  Trabajo  
+Proporcionar  métodos  para  crear,  actualizar  y  eliminar  órdenes  de  trabajo.  
+Clase:  Gestor  Orden  de  Trabajo,  Interfaz  Añadir  Orden  de  Trabajo,Interfaz  Editar  Orden  de  Trabajo,  Eliminar  Orden  de  Trabajo  
+ 
+ 
+
+--- PÁGINA 75 ---
+ 
+ 
+Clase  :  Diagnóstico  
+RESPONSABILIDADES  COLABORACIONES  
+Representar  la  información  de  un  diagnóstico  técnico.  
+Clase:  Interfaz  Informe  Diagnostico  
+Proporcionar  métodos  para  crear,  actualizar  y  eliminar  diagnósticos.  
+Clase:  Gestor  Informe,  Interfaz  Informe  Diagnóstico.  
+ 
+ 
+ 
+Clase  :  Gestor  Nota  Pedido  Servicios  
+RESPONSABILIDADES  COLABORACIONES  
+Obtener  la  lista  de  órdenes  de  servicio  completadas.  
+Clase:  Interfaz  Menú  Principal  
+Generar  una  Nota  de  Pedido  con  un  identificador  único.  
+Clase:  Gestor  de  Añadir  Clientes  
+Registrar  la  Nota  de  Pedido  en  el  historial  del  sistema.  
+Gestor  de  Modificar  Clientes  
+ 
+5.3.4.1.2  Diagrama  de  clases  del  diseño  
+ 
+
+--- PÁGINA 76 ---
+ 
+ 
+ 
+ 
+5.3.4.2  Diagrama  de  clases  de  diseño  del  subsistema  Gestión  de  Clientes  
+5.3.4.2.1  Asignación  de  Operaciones  
+Clase  :  Interfaz  Gestionar  Clientes  
+RESPONSABILIDADES  COLABORACIONES  
+Hace  un  llamado  a  la  interfaz  Gestionar  Clientes  
+Clase  :  Interfaz  Principal  
+ 
+Clase  :  Interfaz  Añadir  Clientes  
+RESPONSABILIDADES  COLABORACIONES  
+ 
+
+
+--- PÁGINA 77 ---
+ 
+ 
+Hace  un  llamado  a  la  interfaz  Añadir  Clientes  
+Clase  :Interfaz  Gestionar  Clientes  
+ 
+Clase  :  Interfaz  Modificar  Clientes  
+RESPONSABILIDADES  COLABORACIONES  
+Hace  un  llamado  a  la  interfaz  Modificar  Clientes  
+Clase  :Interfaz  Gestionar  Clientes  
+ 
+Clase  :  Interfaz  Eliminar  Clientes  
+RESPONSABILIDADES  COLABORACIONES  
+Hace  un  llamado  a  la  interfaz  Eliminar  Clientes  
+Clase  :Interfaz  Gestionar  Clientes  
+ 
+Clase  :  Gestor  de  Añadir  Clientes  
+RESPONSABILIDADES  COLABORACIONES  
+Validar  los  datos  ingresados  del  nuevo  cliente.  
+Clase:  Interfaz  Añadir  Clientes,  Cliente   
+Generar  un  código  único  para  el  cliente.  Clase:  Cliente  
+Guardar  el  cliente  en  la  base  de  datos.  Clase:  Cliente  
+ 
+Clase  :  Gestor  de  Modificar  Clientes  
+RESPONSABILIDADES  COLABORACIONES  
+Obtener  los  datos  del  cliente  a  modificar.  Clase:  Interfaz  Modificar  Clientes,  Cliente   
+ 
+
+--- PÁGINA 78 ---
+ 
+ 
+Validar  y  actualizar  la  información  editada.  
+Clase:  Cliente,  Interfaz  Modificar  Clientes  
+Confirmar  la  modificación  en  la  base  de  datos.  
+Clase:  Cliente,  Interfaz  Modificar  Clientes  
+ 
+Clase  :  Gestor  de  Eliminar  Clientes  
+RESPONSABILIDADES  COLABORACIONES  
+Validar  la  solicitud  de  eliminación  del  cliente.  
+Clase:  Interfaz  Eliminar  Clientes,  Cliente  
+Confirmar  y  eliminar  el  cliente  de  la  base  de  datos.  
+Clase:  Interfaz  Eliminar  Clientes,  Cliente  
+ 
+Clase  :  Cliente  
+RESPONSABILIDADES  COLABORACIONES  
+Almacenar  y  gestionar  los  datos  del  cliente,  como  código,  nombre,  documento  de  identidad,  contacto,  entre  otros.  
+Clase  :Interfaz  Gestionar  Proformas  ,Gestor  de  Añadir,  Modificar  y  Eliminar  Cliente  
+Gestionar  la  obtención  de  datos  del  cliente  
+Clase  :Interfaz  Gestionar  Proformas  ,  Cliente  
+Actualizar  la  información  del  cliente  Clase  :Interfaz  Gestionar  Proformas  ,  Gestor  de  Modificar  Cliente,  Cliente  
+Eliminar  los  datos  del  cliente  Clase  :Interfaz  Gestionar  Proformas  ,  Gestor  de  Eliminar  Cliente,  Cliente  
+5.3.4.2.2  Diagrama  de  clases  del  diseño  
+ 
+ 
+ 
+
+
+--- PÁGINA 79 ---
+ 
+ 
+5.3.5  Agrupación  de  las  clases  de  diseño  en  Subsistema  del  paquete  Ventas  
+➢  Subsistema  Gestión  de  Proformas  
+clases:  
+●  Interfaz  Menú  Principal  ●  Interfaz  Gestionar  Proformas  ●  Interfaz  Añadir  Proformas  ●  Interfaz  Modificar  Proformas  ●  Interfaz  Eliminar  Proformas  ●  Interfaz  Registrar  Pago  ●  Interfaz  Ventana  Explorador  ●  Gestor  de  Añadir  Proforma  ●  Gestor  de  Modificar  Proforma  ●  Gestor  de  Eliminar  Proforma  ●  Gestor  Registrar  Pago  ●  Proforma  ●  Ubicación  del  Comprobante  de  Pago  ●  Cliente  
+5.3.5.1  Diagrama  de  clases  de  diseño  del  subsistema  Gestión  de  Proformas  
+5.3.5.1.1  Asignación  de  Operaciones  
+ 
+Clase  :  Interfaz  Gestionar  Proformas  
+RESPONSABILIDADES  COLABORACIONES  
+Hace  un  llamado  a  la  interfaz  Gestionar  Proformas  
+Clase  :  Interfaz  Principal  
+ 
+ 
+
+--- PÁGINA 80 ---
+ 
+ 
+Clase  :  Interfaz  Añadir  Proformas  
+RESPONSABILIDADES  COLABORACIONES  
+Hace  un  llamado  a  la  interfaz  Añadir  Proformas  
+Clase  :Interfaz  Gestionar  Proformas  
+ 
+Clase  :  Interfaz  Modificar  Proformas  
+RESPONSABILIDADES  COLABORACIONES  
+Hace  un  llamado  a  la  interfaz  Modificar  Proformas  
+Clase  :Interfaz  Gestionar  Proformas  
+ 
+Clase  :  Interfaz  Eliminar  Proformas  
+RESPONSABILIDADES  COLABORACIONES  
+Hace  un  llamado  a  la  interfaz  Eliminar  Proformas  
+Clase  :Interfaz  Gestionar  Proformas  
+ 
+Clase  :  Interfaz  Registrar  Pago  
+RESPONSABILIDADES  COLABORACIONES  
+Hace  un  llamado  a  la  interfaz  Registrar  Pago  
+Clase  :  Menú  Principal  
+ 
+Clase  :  Interfaz  Ventana  Explorador  
+RESPONSABILIDADES  COLABORACIONES  
+Hace  un  llamado  a  la  interfaz  Eliminar  Proformas  
+Clase  :Interfaz  Registrar  Pago  
+ 
+
+--- PÁGINA 81 ---
+ 
+ 
+ 
+Clase  :  Gestor  de  Añadir  Proforma  
+RESPONSABILIDADES  COLABORACIONES  
+Recibir  y  validar  los  datos  de  la  nueva  proforma  desde  la  interfaz.  
+Clase  :Interfaz  Gestionar  Proformas,  Interfaz  Añadir  Proforma,  Proforma  
+Guardar  la  nueva  proforma  en  la  base  de  datos.  
+Clase:  Interfaz  Añadir  Proformas,  Proforma  
+Confirmar  al  usuario  que  la  proforma  ha  sido  registrada  exitosamente.  
+Clase:  Interfaz  Añadir  Proformas  
+ 
+Clase  :  Gestor  de  Modificar  Proforma  
+RESPONSABILIDADES  COLABORACIONES  
+Recibir  y  validar  los  datos  modificados  de  la  proforma.  
+Clase  :Interfaz  Gestionar  Proformas,  Interfaz  Modificar  Proforma,  Proforma  
+Actualizar  la  información  de  la  proforma  en  la  base  de  datos.  
+Clase:  Interfaz  Modificar  Proformas,  Proforma  
+Confirmar  al  usuario  que  la  proforma  ha  sido  modificada  exitosamente.  
+Clase:  Interfaz  Modificar  Proformas  
+ 
+Clase  :  Gestor  de  Eliminar  Proforma  
+RESPONSABILIDADES  COLABORACIONES  
+Eliminar  la  proforma  seleccionada  de  la  base  de  datos.  
+Clase  :Interfaz  Gestionar  Proformas,  Interfaz  Eliminar  Proforma,  Proforma  
+Confirmar  al  usuario  que  la  proforma  ha  sido  eliminada  exitosamente.  
+Clase:  Interfaz  Eliminar  Proforma.  
+ 
+ 
+
+--- PÁGINA 82 ---
+ 
+ 
+Clase  :  Gestor  Registrar  Pago  
+RESPONSABILIDADES  COLABORACIONES  
+Validar  la  existencia  del  cliente  en  la  base  de  datos.  
+Clase:  Interfaz  Registrar  Pago,  Cliente  
+Obtener  y  mostrar  las  proformas  asociadas  al  cliente.  
+Clase:  Interfaz  Registrar  Pago,  Proforma,  Cliente  
+Validar  el  formato  del  archivo  de  comprobante  de  pago  (debe  ser  PDF).  
+Clase:  Interfaz  Registrar  Pago,  Proforma,  Cliente  
+Guardar  la  ubicación  del  comprobante  de  pago.  
+Clase:  Ubicación  del  Comprobante  de  Pago,  Proforma  
+Actualizar  el  estado  de  la  proforma  a  "Pagada"  o  "Pendiente"  según  corresponda.  
+Clase:  Proforma  
+Generar  un  código  único  para  el  registro  del  pago.  
+Clase:  Proforma  
+Confirmar  al  usuario  que  el  pago  ha  sido  registrado  exitosamente.  
+Clase:  Interfaz  Registrar  Pago  
+ 
+Clase  :  Proforma  
+RESPONSABILIDADES  COLABORACIONES  
+Representar  la  información  de  una  proforma  
+Clase:  Interfaz  Gestionar  Proformas  
+Proporcionar  métodos  para  crear,  modificar  y  eliminar  proformas  
+Clase:  Gestor  de  Añadir  Proforma,  Gestor  de  Modificar  Proforma,  Gestor  de  Eliminar  Proforma  
+Actualizar  el  estado  de  la  proforma  (e.g.,  "Pagada",  "Pendiente").  
+Clase  :Interfaz  Gestionar  Proformas,  Gestor  Registrar  Pago  
+Asociar  el  comprobante  de  pago  a  la  proforma.  
+Clase:  Ubicación  del  Comprobante  de  Pago  
+ 
+ 
+
+--- PÁGINA 83 ---
+ 
+ 
+Clase  :  Ubicación  del  Comprobante  de  Pago  
+RESPONSABILIDADES  COLABORACIONES  
+Almacenar  y  gestionar  la  ruta  del  archivo  del  comprobante  de  pago.  
+Clase  :Interfaz  Gestionar  Proformas,  Gestor  Registrar  Pago  
+Proporcionar  acceso  al  comprobante  de  pago  para  futuras  consultas.  
+Clase:  Proforma  
+ 
+Clase  :  Cliente  
+RESPONSABILIDADES  COLABORACIONES  
+Representar  la  información  de  un  cliente  Clase:  Interfaz  de  gestión  de  clientes  
+Proporcionar  métodos  para  buscar  y  recuperar  información  del  cliente  (e.g.,  por  DNI)  
+Clase:  Gestor  Registrar  Pago  
+Asociar  proformas  al  cliente.  Clase  :Interfaz  Gestionar  Proformas,  Proformas.  Cliente  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+--- PÁGINA 84 ---
+ 
+ 
+5.3.5.1.2  Diagrama  de  clases  del  diseño  
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+--- PÁGINA 85 ---
+ 
+ 
+6.  Vista  de  despliegue  
+ 
+  
+6.1  Servidor  de  base  de  datos  
+Características  
+●  Procesador:  AMD  Ryzen  5  2600  Six-Core  Processor                3.40  GHz  ●  Memoria  RAM  16,0  GB  DDR4  ●  Disco  duro  SAS  1TB  por  chasis  
+6.2  Switch  
+Características  
+●  Como  mínimo  5  puertos  ●  Ancho  de  banda  por  ranura:  48  Gbps  ●  Terminación  inalámbrica  máxima:  20  Gb  
+ 
+
+
+--- PÁGINA 86 ---
+ 
+ 
+6.3  Computadoras  
+Características  
+●  AMD  Ryzen  5  2600  Six-Core  Processor                3.40  GHz  ●  Memoria  Ram  16,0  GB  DDR4  ●  Disco  duro  SATA  1TB  por  chasis  ●  Sistema  operativo:  Windows  10  
+ 
+7.  Vista  de  implementación  
+7.1  Descripción  
+En  esta  vista  de  implementación  se  presenta  el  sistema  en  términos  de  componentes,  es  decir  ficheros  de  
+código
+ 
+fuente.
+ 
+Nos
+ 
+enfocaremos
+ 
+en
+ 
+la
+ 
+organización
+ 
+de
+ 
+los
+ 
+módulos
+ 
+de
+ 
+software.
+ 
+Se  ha  decidido  separar  en  tres  módulos  Registro  de  Equipos  (abarca  cada  una  de  las  actividades  del  
+paquete
+ 
+Registro
+ 
+de
+ 
+Equipos),
+ 
+Recepción
+ 
+de
+ 
+Equipos
+ 
+(abarca
+  
+cada
+ 
+una
+ 
+de
+ 
+las
+ 
+actividades
+ 
+del
+ 
+paquete
+ 
+de
+ 
+Recepción
+ 
+de
+ 
+Equipos)
+ 
+y
+ 
+Distribución
+ 
+de
+ 
+Equipos
+ 
+(abarca
+ 
+cada
+ 
+una
+ 
+de
+ 
+las
+ 
+actividades
+ 
+del
+ 
+paquete
+ 
+Distribución
+ 
+de
+ 
+Equipos).
+ 
+En  esta  vista  también  se  explicara   cual  es  la  relación  entre  los  componentes  y  la  clase  de  diseño  de  cada  
+módulo.
+ 
+7.2  Diagrama  de  componentes  
+     7.2.1  Actividad  implementar  un  subsistema  
+ 
+
+--- PÁGINA 87 ---
+ 
+ 
+ 
+❖  Subsistema  de  Implementación:  Gestión  de  Clientes  ➢  Componente  Cliente  ■  Cliente  ■  Interfaz  Gestionar  Clientes  ■  Interfaz  Añadir  Clientes  ■  Interfaz  Modificar  Clientes  ■  Interfaz  Eliminar  Clientes  
+ ➢  Componente  Gestor  Cliente  ■  Gestor  Añadir  Clientes  ■  Gestor  Modificar  Clientes  ■  Gestor  Eliminar  Clientes  
+ 
+
+
+--- PÁGINA 88 ---
+ 
+ 
+ 
+    
+❖  Subsistema  de  Implementación:  Gestión  de  Orden  de  Trabajo  ➢  Componente  Orden  de  Trabajo  ■  Interfaz  Añadir  Orden  de  Trabajo  ■  Interfaz  Editar  Orden  de  Trabajo  ■  Interfaz  Eliminar  Orden  de  Trabajo  ■  Interfaz  Órdenes  de  Trabajo  ■  Orden  de  Trabajo  
+ ➢  Componente  Gestor  Orden  de  Trabajo  ■  Gestor  Orden  de  Trabajo  ■  Gestor  Controlador  Órdenes  ■  Gestor  de  Órdenes  
+ ➢  Componente  Informe  ■  Interfaz  Informe  Diagnóstico  ■  Diagnóstico  
+ ➢  Componente  Gestor  Informe  ■  Gestor   Informe  ■  Gestor  Controlador  Informe  
+ 
+ 
+
+
+--- PÁGINA 89 ---
+ 
+ 
+  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+--- PÁGINA 90 ---
+ 
+ 
+ 
+❖  Subsistema  de  Implementación:  Gestión  de  Proformas  ➢  Componente  Proforma  ■  Interfaz  Gestionar  Proformas  ■  Interfaz  Añadir  Proformas  ■  Interfaz  Modificar  Proformas  ■  Interfaz  Eliminar  Proformas  ■  Proforma  
+ ➢  Componente  Gestor  Proforma  ■  Gestor  Añadir  Proforma  ■  Gestor  Modificar  Proforma  ■  Gestor  Eliminar  Proforma  ➢  Componente  Pago  ■  Interfaz  Registrar  Pago  ■  Ubicación  del  Comprobante  de  Pago  
+ ➢  Componente  Gestor  Pago  ■  Gestor  Registrar  Pago  
+ ➢  Componente  Cliente  ■  Cliente  
+ 
+ 
+ 
+
+
+--- PÁGINA 91 ---
+ 
+ 
+8.  Vista  de  Datos  
+8.1  Modelo  Relacional  
+                             
+ 
+
+
+--- PÁGINA 92 ---
+ 
+ 
+8.2  Tipo  de  base  de  datos:  Base  de  datos  centralizado   
+         
+ 

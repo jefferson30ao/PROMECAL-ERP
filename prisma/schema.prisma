@@ -1,0 +1,370 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+enum ServiceType {
+  CALIBRATION
+  TECHNICAL_SUPPORT
+}
+enum PaymentTerms {
+  CASH
+  CREDIT
+}
+enum OrderStatus {
+  PENDING
+  SCHEDULED
+  IN_PROGRESS
+  IN_REVIEW
+  RELEASED
+  DISPATCHED
+}
+model Client {
+  id String @id @default(uuid())
+  name String
+  documentType String
+  document String @unique
+  contact String
+  email String
+  phone String?
+  address String?
+  sector String?
+  paymentTerms PaymentTerms @default(CASH)
+  creditLimit Decimal @default(0) @db.Decimal(14,2)
+  active Boolean @default(true)
+  requests ServiceRequest[]
+  equipment Equipment[]
+  orders ServiceOrder[]
+  quotes Quote[]
+  customerOrders CustomerPurchaseOrder[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model ServiceRequest {
+  id String @id @default(uuid())
+  clientId String
+  client Client @relation(fields:[clientId], references:[id])
+  subject String
+  channel String
+  service ServiceType
+  status String @default("NEW")
+  createdAt DateTime @default(now())
+}
+model Equipment {
+  id String @id @default(uuid())
+  serial String @unique
+  name String
+  brand String?
+  model String?
+  physicalCondition String?
+  location String
+  custodyStatus String
+  clientId String
+  client Client @relation(fields:[clientId],references:[id])
+  orders ServiceOrder[]
+  movements CustodyMovement[]
+}
+model ServiceOrder {
+  id String @id @default(uuid())
+  code String @unique
+  name String
+  clientId String
+  client Client @relation(fields:[clientId],references:[id])
+  equipmentId String
+  equipment Equipment @relation(fields:[equipmentId],references:[id])
+  service ServiceType
+  status OrderStatus @default(PENDING)
+  magnitude String
+  priority String
+  amount Decimal @db.Decimal(14,2)
+  receivedAt DateTime?
+  dueAt DateTime
+  scheduledAt DateTime?
+  technicianId String?
+  technician Technician? @relation(fields:[technicianId],references:[id])
+  standardId String?
+  standard ReferenceStandard? @relation(fields:[standardId],references:[id])
+  quotes Quote[]
+  serviceNotes ServiceNote[]
+  receipts Receipt[]
+  diagnoses Diagnosis[]
+  results TechnicalResult[]
+  documents ServiceDocument[]
+  nonconformities Nonconformity[]
+  invoices Invoice[]
+  payments Payment[]
+  costs ServiceCost[]
+  purchases PurchaseOrder[]
+  dispatch Dispatch?
+  collections CollectionAction[]
+  warranties Warranty[]
+  movements StockMovement[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([clientId,status])
+  @@index([technicianId,scheduledAt])
+}
+model Quote {
+  id String @id @default(uuid())
+  code String @unique
+  clientId String
+  client Client @relation(fields:[clientId],references:[id])
+  // Null permitido para calibración antes del ingreso del instrumento.
+  diagnosticOrderId String?
+  diagnosticOrder ServiceOrder? @relation(fields:[diagnosticOrderId],references:[id])
+  service String
+  amount Decimal @db.Decimal(14,2)
+  conditions String
+  deliverable String
+  deliveryDays Int
+  validUntil DateTime
+  writtenAcceptance String?
+  status String @default("DRAFT")
+  customerOrders CustomerPurchaseOrder[]
+  serviceNotes ServiceNote[]
+}
+model CustomerPurchaseOrder {
+  id String @id @default(uuid())
+  number String
+  clientId String
+  client Client @relation(fields:[clientId],references:[id])
+  quoteId String
+  quote Quote @relation(fields:[quoteId],references:[id])
+  amount Decimal @db.Decimal(14,2)
+  serviceNotes ServiceNote[]
+  @@unique([clientId,number])
+}
+model ServiceNote {
+  id String @id @default(uuid())
+  code String @unique
+  orderId String
+  order ServiceOrder @relation(fields:[orderId],references:[id])
+  quoteId String?
+  quote Quote? @relation(fields:[quoteId],references:[id])
+  customerOrderId String?
+  customerOrder CustomerPurchaseOrder? @relation(fields:[customerOrderId],references:[id])
+  type String @default("SERVICE")
+  amount Decimal @db.Decimal(14,2)
+  paymentCommitment String?
+  status String @default("DRAFT")
+  warrantyId String?
+  warranty Warranty? @relation(fields:[warrantyId],references:[id])
+}
+model Warranty {
+  id String @id @default(uuid())
+  originalOrderId String
+  originalOrder ServiceOrder @relation(fields:[originalOrderId],references:[id])
+  validUntil DateTime
+  coverageDiagnosis String
+  status String
+  serviceNotes ServiceNote[]
+}
+model Receipt {
+  id String @id @default(uuid())
+  orderId String
+  order ServiceOrder @relation(fields:[orderId],references:[id])
+  documentType String
+  reference String
+  conformityBy String
+  receivedAt DateTime @default(now())
+}
+model CustodyMovement {
+  id String @id @default(uuid())
+  equipmentId String
+  equipment Equipment @relation(fields:[equipmentId],references:[id])
+  origin String
+  destination String
+  actor String
+  conformityReference String
+  at DateTime @default(now())
+}
+model Diagnosis {
+  id String @id @default(uuid())
+  orderId String
+  order ServiceOrder @relation(fields:[orderId],references:[id])
+  findings String
+  recommendation String
+  repairability String
+  clientDecision String
+  fee Decimal @db.Decimal(14,2)
+}
+model TechnicalResult {
+  id String @id @default(uuid())
+  orderId String
+  order ServiceOrder @relation(fields:[orderId],references:[id])
+  point String
+  reference Decimal @db.Decimal(20,8)
+  reading Decimal @db.Decimal(20,8)
+  unit String
+  notes String
+  status String
+}
+model ServiceDocument {
+  id String @id @default(uuid())
+  orderId String
+  order ServiceOrder @relation(fields:[orderId],references:[id])
+  type String
+  version Int @default(1)
+  reviewedBy String?
+  reviewedAt DateTime?
+  signatureReference String?
+  releasedAt DateTime?
+  storageKey String?
+  @@unique([orderId,type,version])
+}
+model Technician {
+  id String @id @default(uuid())
+  name String
+  role String
+  authorizations CompetencyAuthorization[]
+  orders ServiceOrder[]
+}
+model CompetencyAuthorization {
+  id String @id @default(uuid())
+  technicianId String
+  technician Technician @relation(fields:[technicianId],references:[id])
+  magnitude String
+  status String
+  validUntil DateTime
+  evidence String
+  @@unique([technicianId,magnitude])
+}
+model ReferenceStandard {
+  id String @id @default(uuid())
+  name String
+  serial String @unique
+  magnitude String
+  certificate String
+  recalibrationDue DateTime
+  orders ServiceOrder[]
+}
+model Nonconformity {
+  id String @id @default(uuid())
+  orderId String
+  order ServiceOrder @relation(fields:[orderId],references:[id])
+  finding String
+  rootCause String?
+  correctiveAction String?
+  owner String
+  dueAt DateTime
+  status String @default("OPEN")
+}
+model ControlledDocument {
+  id String @id @default(uuid())
+  code String
+  title String
+  revision String
+  owner String
+  status String
+  storageKey String?
+  reviewedAt DateTime?
+  @@unique([code,revision])
+}
+model StockItem {
+  id String @id @default(uuid())
+  sku String @unique
+  name String
+  quantity Int
+  minimum Int
+  unitCost Decimal @db.Decimal(14,2)
+  location String
+  movements StockMovement[]
+  purchaseLines PurchaseLine[]
+}
+model StockMovement {
+  id String @id @default(uuid())
+  stockId String
+  stock StockItem @relation(fields:[stockId],references:[id])
+  orderId String?
+  order ServiceOrder? @relation(fields:[orderId],references:[id])
+  quantity Int
+  kind String
+  at DateTime @default(now())
+}
+model Supplier {
+  id String @id @default(uuid())
+  name String
+  document String @unique
+  email String
+  contact String
+  purchases PurchaseOrder[]
+}
+model PurchaseOrder {
+  id String @id @default(uuid())
+  code String @unique
+  supplierId String
+  supplier Supplier @relation(fields:[supplierId],references:[id])
+  orderId String?
+  order ServiceOrder? @relation(fields:[orderId],references:[id])
+  status String
+  dueAt DateTime
+  lines PurchaseLine[]
+}
+model PurchaseLine {
+  id String @id @default(uuid())
+  purchaseId String
+  purchase PurchaseOrder @relation(fields:[purchaseId],references:[id])
+  stockId String
+  stock StockItem @relation(fields:[stockId],references:[id])
+  quantity Int
+  unitCost Decimal @db.Decimal(14,2)
+}
+model Invoice {
+  id String @id @default(uuid())
+  code String @unique
+  orderId String
+  order ServiceOrder @relation(fields:[orderId],references:[id])
+  amount Decimal @db.Decimal(14,2)
+  dueAt DateTime
+  status String @default("DRAFT")
+  externalReference String?
+}
+model Payment {
+  id String @id @default(uuid())
+  orderId String
+  order ServiceOrder @relation(fields:[orderId],references:[id])
+  reference String
+  amount Decimal @db.Decimal(14,2)
+  method String
+  status String @default("PENDING_RECONCILIATION")
+  evidenceKey String?
+  confirmedAt DateTime?
+  createdAt DateTime @default(now())
+}
+model CollectionAction {
+  id String @id @default(uuid())
+  orderId String
+  order ServiceOrder @relation(fields:[orderId],references:[id])
+  action String
+  followUpAt DateTime
+  status String
+}
+model ServiceCost {
+  id String @id @default(uuid())
+  orderId String
+  order ServiceOrder @relation(fields:[orderId],references:[id])
+  concept String
+  category String
+  amount Decimal @db.Decimal(14,2)
+  incurredAt DateTime
+}
+model Dispatch {
+  id String @id @default(uuid())
+  orderId String @unique
+  order ServiceOrder @relation(fields:[orderId],references:[id])
+  documentReference String
+  recipient String
+  dispatchedAt DateTime @default(now())
+}
+model AuditEvent {
+  id String @id @default(uuid())
+  entityType String
+  entityId String
+  action String
+  actorId String
+  data Json?
+  at DateTime @default(now())
+  @@index([entityType,entityId,at])
+}

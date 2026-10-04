@@ -1,0 +1,506 @@
+
+UNIVERSIDAD NACIONAL MAYOR DE SAN MARCOS
+(Universidad del Perú, DECANA DE AMÉRICA)
+FACULTAD DE INGENIERÍA DE SISTEMAS E INFORMÁTICA
+Escuela Profesional de Ingeniería de Sistemas
+Proyecto del curso de Planeamiento de Recursos Empresariales
+PROPUESTA DE IMPLEMENTACIÓN DE UN SISTEMA ERP PARA LA GESTIÓN INTEGRADA DE LOS SERVICIOS DE CALIBRACIÓN Y SOPORTE TÉCNICO DE PROMECAL S.A.C.
+
+Docente:
+Piedra Isusqui, José Cesar
+Integrantes – Grupo N° ___:
+[Apellidos y nombres – código]
+[Apellidos y nombres – código]
+[Apellidos y nombres – código]
+[Apellidos y nombres – código]
+Lima – Perú
+2026
+
+ÍNDICE
+1. CARÁTULA1
+2. ÍNDICE2
+3. INTRODUCCIÓN3
+4. LA ORGANIZACIÓN4
+4.1. Datos generales4
+4.2. Misión y visión4
+4.3. Valores4
+4.4. Servicios5
+4.5. Clientes y sectores atendidos5
+4.6. Alianzas y tecnología5
+4.7. Estructura organizacional6
+5. ANTECEDENTES DE LA ORGANIZACIÓN8
+5.1. Trayectoria8
+5.2. Sistema de gestión documentado8
+5.3. Situación tecnológica actual8
+5.4. Procesos actuales (AS-IS)9
+5.4.1. Servicio de calibración9
+5.4.2. Servicio de soporte técnico10
+5.4.3. Flujo de garantía (propuesto)11
+5.5. Iniciativas tecnológicas previas11
+6. DIAGNÓSTICO13
+6.1. Matriz Problema – Motivos – Causas (Efectos) – Solución13
+6.1.1. Síntesis de la solución: módulos del ERP15
+6.2. Diagrama de Ishikawa (espina de pescado)17
+
+3. INTRODUCCIÓN
+La metrología industrial es un soporte silencioso de la calidad. Empresas mineras, pesqueras, textiles, petroquímicas, de construcción y laboratorios dependen de instrumentos calibrados para asegurar que sus mediciones sean confiables y trazables; un instrumento descalibrado puede traducirse en productos fuera de especificación, paradas de planta o incumplimientos normativos.
+PROMECAL S.A.C., con más de 30 años en el mercado peruano, presta servicios de calibración de instrumentos de medición eléctrica, de temperatura, de presión y fotométrica, así como servicios de soporte técnico (diagnóstico, mantenimiento preventivo y reparación) de equipos industriales y de medición. Su operación involucra a las áreas de Ventas, Recepción y Despacho, Laboratorio de Calibración, Servicio Técnico y Administración, que hoy se coordinan principalmente por correo electrónico y mediante un sistema comercial que cubre solo una parte del proceso.
+Esta fragmentación genera reprocesos, demoras y pérdida de trazabilidad: la información de un mismo pedido se registra varias veces, el estado de un equipo no puede consultarse en línea, el control de crédito y cobranza es manual y la emisión de certificados depende de transcripciones y recálculos. Iniciativas previas —el Sistema de Atención de Pedidos (SAP) en sus versiones web y distribuida— atacaron únicamente la atención de pedidos, sin integrar la gestión financiera, logística ni de calidad.
+El presente proyecto propone la implementación de un sistema ERP que integre los procesos de PROMECAL en cinco módulos sobre una base de datos única de clientes, equipos y órdenes:
+M1 · Gestión Comercial (CRM y Ventas)
+M2 · Operaciones de Servicio (Laboratorio y Servicio Técnico)
+M3 · Logística, Inventario y Compras
+M4 · Finanzas y Facturación
+M5 · Calidad, Metrología y Competencias
+El documento se organiza de la siguiente manera: el capítulo 4 presenta la organización; el capítulo 5 describe sus antecedentes, el sistema de gestión documentado, la situación tecnológica, los procesos actuales (AS-IS) y las iniciativas previas; finalmente, el capítulo 6 desarrolla el diagnóstico mediante la matriz Problema – Motivos – Causas (Efectos) – Solución y el diagrama de Ishikawa, que sustentan la propuesta modular del ERP.
+
+4. LA ORGANIZACIÓN
+4.1. Datos generales
+Razón social
+PROMECAL S.A.C.
+RUC
+[Completar con la consulta RUC de SUNAT]
+Actividad principal
+Servicios de calibración de instrumentos de medición y soporte técnico (diagnóstico, mantenimiento y reparación) de equipos industriales y de medición
+Sector
+Servicios de metrología e ingeniería para la industria
+Trayectoria
+Más de 30 años en el mercado peruano
+Ubicación
+Lima, Perú [completar dirección fiscal]
+Tipo de cliente
+Empresas (RUC) y personas naturales (DNI), con o sin línea de crédito
+Canales de atención
+Presencial, telefónico y digital (correo electrónico)
+
+4.2. Misión y visión
+Misión: Brindar servicios de calibración y soporte técnico confiables y trazables a los sectores industriales del país, garantizando mediciones exactas mediante personal técnico calificado, patrones de referencia controlados y procedimientos documentados.
+Visión: Ser el laboratorio de calibración y servicio técnico de referencia en el Perú, reconocido por la exactitud de sus resultados, la rapidez de su atención y la integración digital de sus procesos.
+Nota del equipo: la misión y la visión no figuran en la documentación disponible; se proponen a partir del giro y del sistema de gestión de la empresa. Reemplazar por las oficiales si PROMECAL las proporciona.
+4.3. Valores
+Exactitud: resultados de medición correctos y verificables.
+Imparcialidad y confiabilidad: resultados independientes de presiones comerciales, como exige un laboratorio de calibración.
+Orientación al cliente: requisitos definidos, documentados y comprendidos desde la proforma.
+Mejora continua: registro y tratamiento de salidas no conformes.
+Trabajo en equipo: coordinación entre Ventas, Recepción, Laboratorio y Servicio Técnico.
+Nota del equipo: valores inferidos; validar con la empresa.
+4.4. Servicios
+PROMECAL presta dos líneas de servicio con flujos de atención diferenciados (ver 5.4):
+Servicio
+Alcance
+Entregable
+Calibración eléctrica
+Instrumentos de medición de magnitudes eléctricas
+Certificado de Calibración o Informe de Verificación (CAL-PR-06)
+Calibración de temperatura
+Instrumentos de medición de temperatura
+Certificado de Calibración o Informe de Verificación
+Calibración de presión
+Instrumentos de presión y patrones de alta exactitud, con software Fluke COMPASS® for Pressure
+Certificado de Calibración o Informe de Verificación
+Calibración fotométrica
+Instrumentos de medición fotométrica
+Certificado de Calibración o Informe de Verificación
+Diagnóstico técnico
+Evaluación previa (con costo) para determinar si el equipo es reparable y cotizar el servicio
+Informe Técnico de Diagnóstico
+Mantenimiento y reparación
+Mantenimiento preventivo y reparación de equipos industriales y de medición (STO-PR-01)
+Informe de Reparación y Acta de Entrega de Diagnóstico/Reparación
+Garantía
+Cobertura según las Condiciones Generales de Contratación
+Informe de Diagnóstico / Reparación
+
+4.5. Clientes y sectores atendidos
+La empresa atiende a los sectores pesquero, textil, minero, petroquímico, construcción y laboratorios. Operativamente, los clientes se clasifican en dos grupos que determinan el flujo de pago:
+Clientes con crédito: envían orden de compra y el servicio se ejecuta sin pago previo.
+Clientes sin crédito (contado): deben presentar evidencia de pago (voucher, transferencia) o un compromiso de pago antes de la atención; no siempre envían orden de compra.
+4.6. Alianzas y tecnología
+Certificación ABB y alianzas estratégicas que respaldan la calidad del servicio técnico.
+Fluke COMPASS® for Pressure para la calibración de instrumentos de presión y patrones de alta exactitud.
+Sistema comercial interno (SICO) con módulo de Ventas, usado para registrar clientes, órdenes de servicio y el programa de calibración.
+4.7. Estructura organizacional
+A partir de los responsables identificados en el flujo de actividades se reconstruye el siguiente organigrama funcional:
+
+Figura 1. Organigrama funcional de PROMECAL (elaboración propia).
+Nota del equipo: los cargos marcados con * no aparecen explícitamente en la documentación; se infieren de actividades como "revisa los resultados y autoriza la emisión" o del registro F01-SIG-PR-05, que implican un responsable.
+
+Tabla 1. Responsabilidades por área y cargo
+Área
+Cargo
+Responsabilidades principales
+Ventas
+Ejecutivo de Ventas
+Atiende solicitudes; registra clientes; emite proformas; verifica crédito; genera la nota de pedido y la orden de trabajo; comunica avances y coordina la entrega.
+Recepción y Despacho
+Asistente de Recepción y Despacho
+Recibe equipos con guía de remisión o F01; genera la orden de servicio; entrega equipos al laboratorio o servicio técnico; despacha equipos terminados.
+Laboratorio de Calibración
+Jefe de Laboratorio *
+Genera el programa de calibración; designa al técnico; revisa resultados y autoriza la emisión; registra salidas no conformes.
+
+Técnico de Calibración
+Ejecuta la calibración según procedimientos; registra resultados; reporta condiciones no adecuadas del equipo.
+Servicio Técnico
+Jefe de Servicio Técnico *
+Asigna y supervisa diagnósticos y reparaciones; revisa informes.
+
+Asistente Técnico
+Realiza el diagnóstico; elabora informes de diagnóstico, certificados e informes de servicio.
+
+Especialista de Soporte Técnico
+Ejecuta el mantenimiento o reparación; registra las notas de soporte técnico.
+Administración y Finanzas
+Asistente Administrativo
+Verifica la cancelación de servicios; emite la factura electrónica; gestiona la cobranza.
+
+Logística y Compras *
+Compra repuestos e insumos; gestiona proveedores.
+Calidad / SIG *
+Responsable de Calidad *
+Control documentario; tratamiento de no conformidades; control de patrones y competencias.
+
+5. ANTECEDENTES DE LA ORGANIZACIÓN
+5.1. Trayectoria
+PROMECAL inició sus operaciones como laboratorio de calibración de instrumentos de medición y, a lo largo de más de tres décadas, amplió su oferta hacia el soporte técnico de equipos industriales. Hoy opera varios laboratorios especializados por magnitud (eléctrica, presión, temperatura y fotometría), cuenta con certificación de ABB y atiende a sectores industriales exigentes en trazabilidad metrológica.
+Nota del equipo: completar con el año de fundación e hitos (ampliación de laboratorios, certificaciones, acreditaciones) obtenidos de la empresa o de su página web.
+5.2. Sistema de gestión documentado
+La empresa mantiene procedimientos y formatos codificados por área (VEN, RYD, CAL, STO, SIG), lo que evidencia un Sistema Integrado de Gestión. Estos documentos son el principal insumo para parametrizar el ERP:
+Código
+Documento
+Área / uso
+F01-VEN-PR-01
+Alcance del Servicio de Calibración y Servicio Técnico
+Ventas – definición de requisitos con el cliente
+—
+Condiciones Generales de Contratación de Servicio de Calibración y Servicio Técnico
+Ventas – plazos, garantías y condiciones
+RYD-PR-01
+Procedimiento de Recepción y Despacho
+Recepción y Despacho
+F01-RYD-PR-01
+Recepción de equipos sin pedido (F01)
+Sustituto de la guía de remisión
+CAL-PR-06
+Elaboración y Emisión de Certificados de Calibración e Informes de Verificación
+Laboratorio de Calibración
+F06-CAL-PR-04
+Acta de Entrega de Calibración
+Laboratorio → Recepción y Despacho
+STO-PR-01
+Servicio Técnico
+Servicio Técnico
+F01-SIG-PR-05
+Registro de Salida No Conforme
+Calidad / SIG
+
+5.3. Situación tecnológica actual
+Herramienta
+Uso actual
+Limitación
+Sistema SICO (módulo de Ventas)
+Registro de clientes, orden de servicio, programa de calibración y registro de salidas no conformes
+Cubre solo el ámbito comercial y parte del laboratorio; no integra servicio técnico, despacho ni finanzas
+Correo electrónico
+Canal principal entre áreas: nota de pedido, orden de trabajo, informes, confirmaciones
+Sin estados ni trazabilidad; depende de la bandeja de cada usuario
+Registros físicos
+Recepción de instrumentos y actas de entrega firmadas
+No consultables en línea; riesgo de pérdida
+Facturación electrónica
+Emisión de comprobantes y verificación de pagos con el área administrativa
+Desconectada del flujo operativo; el bloqueo de entrega se controla manualmente
+Inventario y patrones
+No se identifica herramienta
+Sin control de stock de repuestos ni de vencimientos de patrones (inferido)
+Nota del equipo: la documentación menciona el sistema como "SICO" y como "ZICO"; se asume que es el mismo sistema. Confirmar el nombre correcto.
+5.4. Procesos actuales (AS-IS)
+Del flujo de actividades de la empresa se desprenden dos procesos con secuencias distintas: en calibración la proforma se emite antes de recibir el equipo, mientras que en soporte técnico primero se realiza un diagnóstico con costo y luego se cotiza.
+5.4.1. Servicio de calibración
+N°
+Actividad
+Responsable
+Documento / registro
+1
+Recibe la solicitud del cliente (digital, telefónica o presencial).
+Ejecutivo de Ventas
+—
+2
+Registra al cliente nuevo o recupera los datos del cliente frecuente.
+Ejecutivo de Ventas
+SICO – ficha de cliente
+3
+Informa el alcance del servicio y si aplica Certificado de Calibración o Informe de Verificación.
+Ejecutivo de Ventas
+F01-VEN-PR-01, CAL-PR-06
+4
+Genera y envía la proforma con las condiciones generales de contratación.
+Ejecutivo de Ventas
+Proforma de Servicios
+5
+Solicita confirmación escrita y recibe la orden de compra (no siempre en clientes sin crédito).
+Ejecutivo de Ventas
+Orden de Compra
+6
+Recibe el equipo y entrega la guía de remisión o el F01 al ejecutivo.
+Asist. Recepción y Despacho
+Guía / F01-RYD-PR-01
+7
+Verifica las características del equipo y comunica la recepción y observaciones al cliente.
+Ejecutivo de Ventas
+—
+8
+Genera la nota de pedido y verifica crédito: con crédito la envía; sin crédito exige pago o compromiso de pago antes de enviarla.
+Ejecutivo de Ventas
+Nota de Pedido de Servicio
+9
+Genera la orden de servicio y entrega el equipo al laboratorio con firma de conformidad.
+Asist. Recepción y Despacho
+Orden de Servicio; Recepción de instrumentos
+10
+Genera el programa de calibración y designa al técnico responsable.
+Jefe de Laboratorio *
+Programa de Calibración
+11
+Ejecuta la calibración; si el equipo presenta condiciones no adecuadas, informa al ejecutivo.
+Técnico de Calibración
+Notas de calibración
+12
+Revisa y recalcula resultados: si son conformes autoriza la emisión; si no, registra la salida no conforme.
+Jefe de Laboratorio *
+F01-SIG-PR-05
+13
+Emite el certificado o informe de verificación y comunica la culminación.
+Laboratorio
+Certificado / Informe de Verificación
+14
+Entrega el equipo calibrado a Recepción y Despacho.
+Laboratorio
+F06-CAL-PR-04
+15
+Comunica el término al cliente y solicita datos de recojo o envío; envía los certificados digitales si se solicitan.
+Ejecutivo de Ventas
+—
+16
+Emite la factura (contado: tras confirmar el depósito) y despacha el equipo.
+Asist. Administrativo / Recepción y Despacho
+Factura electrónica; guía
+
+5.4.2. Servicio de soporte técnico
+N°
+Actividad
+Responsable
+Documento / registro
+1
+Recibe la solicitud e informa que el equipo requiere un diagnóstico previo, su costo y plazo.
+Ejecutivo de Ventas
+—
+2
+Si el cliente acepta, registra o recupera sus datos y solicita la entrega del equipo.
+Ejecutivo de Ventas
+SICO – ficha de cliente
+3
+Recibe el equipo con guía de remisión o F01.
+Asist. Recepción y Despacho
+Guía / F01-RYD-PR-01
+4
+Verifica el equipo, comunica la recepción y genera la orden de trabajo.
+Ejecutivo de Ventas
+Orden de Trabajo
+5
+Realiza el diagnóstico y envía el informe técnico.
+Servicio Técnico
+STO-PR-01; Informe Técnico de Diagnóstico
+6
+Revisa el informe y genera la proforma a partir de la orden de trabajo.
+Ejecutivo de Ventas
+Proforma de Servicios
+7
+Envía al cliente el informe, la proforma y el alcance del servicio técnico.
+Ejecutivo de Ventas
+—
+8
+Decisión: si acepta, pide confirmación escrita y orden de compra; si no acepta o el equipo es irreparable, emite proforma y nota de pedido solo por el diagnóstico.
+Ejecutivo de Ventas
+Orden de Compra; Nota de Pedido
+9
+Genera la nota de pedido y verifica crédito (mismo criterio que en calibración).
+Ejecutivo de Ventas
+Nota de Pedido de Servicios
+10
+Ejecuta el mantenimiento o reparación.
+Especialista de Soporte
+Notas de soporte técnico
+11
+Genera el acta de entrega y el informe de reparación.
+Servicio Técnico
+Acta de Entrega; Informe de Reparación
+12
+Comunica el término: con crédito envía el informe; sin crédito verifica el pago antes de enviarlo.
+Ejecutivo de Ventas / Asist. Administrativo
+Informe del Servicio
+13
+Coordina el recojo o envío y despacha el equipo.
+Recepción y Despacho
+Guía de remisión
+
+5.4.3. Flujo de garantía (propuesto)
+El procedimiento actual deja abierta la pregunta de si un servicio en garantía genera nota de pedido. Se propone el siguiente flujo para mantener la trazabilidad:
+El equipo ingresa por garantía y Recepción y Despacho lo deriva a Servicio Técnico (etapa 6.a.2 de RYD-PR-01).
+Servicio Técnico emite el informe de diagnóstico indicando si la falla está cubierta, según las Condiciones Generales de Contratación.
+Cubierto: se genera una nota de pedido de tipo "Garantía" con monto cero, vinculada a la orden original, y se continúa con la ejecución.
+No cubierto: se sigue el flujo normal de soporte técnico desde la proforma.
+Nota del equipo: flujo inferido para cerrar el vacío del procedimiento; validar con PROMECAL.
+5.5. Iniciativas tecnológicas previas
+Antes de esta propuesta se desarrollaron dos versiones del Sistema de Atención de Pedidos (SAP) en cursos de la FISI-UNMSM, que constituyen el antecedente directo del ERP:
+Aspecto
+SAP – versión web
+SAP – versión distribuida
+ERP propuesto
+Alcance
+Atención de pedidos: 4 procesos, 15 casos de uso
+Atención de pedidos y ventas
+Toda la empresa: 5 módulos integrados
+Arquitectura
+Tres capas con MVC
+Microservicios (NestJS + Spring Boot), RabbitMQ, Kubernetes (EKS)
+Plataforma ERP modular sobre base de datos única
+Datos
+Base de datos centralizada
+PostgreSQL: 5 bases lógicas, 22 tablas (database-per-service)
+Maestro único de clientes, equipos y órdenes
+Finanzas
+Registro de pago y comprobante
+Proformas y pagos
+Crédito, facturación electrónica, cobranza y costeo
+Inventario y compras
+No contemplado
+ms-inventario pendiente de definir
+Equipos en custodia, repuestos y compras
+Calidad
+No contemplado
+No contemplado
+Patrones, no conformidades y competencias
+
+Ambas versiones aportan casos de uso y un modelo de datos reutilizables; sin embargo, asumen un diagnóstico previo también para la calibración, lo que difiere del proceso real descrito en 5.4.1, y no modelan la orden de servicio, el programa de calibración, el control de crédito ni el informe de verificación. El ERP corrige estos puntos y amplía el alcance a las áreas de soporte del negocio.
+6. DIAGNÓSTICO
+El diagnóstico se elaboró a partir del flujo de actividades de la empresa, los documentos de análisis y de arquitectura del SAP, y la reconstrucción de los procesos AS-IS. Se identificaron nueve problemas que se analizan con dos herramientas complementarias: la matriz Problema – Motivos – Causas (Efectos) – Solución (6.1) y el diagrama de Ishikawa (6.2).
+6.1. Matriz Problema – Motivos – Causas (Efectos) – Solución
+Lectura de la matriz: el Problema es la situación no deseada; los Motivos explican por qué ocurre (su origen); las Causas (Efectos) describen lo que el problema provoca en la operación; y la Solución indica la funcionalidad y el módulo del ERP que lo atiende.
+N°
+PROBLEMA
+MOTIVOS
+CAUSAS (EFECTOS)
+SOLUCIÓN
+P1
+Información de clientes, pedidos y equipos fragmentada
+El sistema actual solo cubre el ámbito comercial; el programa de calibración, los resultados, el despacho y los pagos se registran por separado; los datos se digitan varias veces (SICO, correo, formatos físicos).
+Datos duplicados e inconsistentes; errores de transcripción; no existe una vista única del pedido ni un historial completo por cliente o equipo.
+Base de datos única con maestro de clientes y equipos compartido por los cinco módulos. (M1–M5)
+P2
+Coordinación entre áreas por correo, sin trazabilidad
+La nota de pedido, la orden de trabajo, el informe de diagnóstico y las confirmaciones viajan por email; el Ejecutivo de Ventas intermedia toda la comunicación.
+Demoras en la derivación; mensajes perdidos; el cliente no conoce el estado de su equipo; sobrecarga del Ejecutivo de Ventas.
+Workflow con estados por orden y notificaciones automáticas a áreas y cliente. (M1, M2, M3)
+P3
+Control de crédito, cobranza y facturación manual
+El crédito se verifica caso por caso; los vouchers llegan por correo; existen "compromisos de pago" informales; la factura electrónica se emite fuera del flujo.
+Riesgo de morosidad; servicios iniciados o equipos entregados sin pago confirmado; cuentas por cobrar desactualizadas.
+Línea de crédito por cliente validada al generar la nota de pedido, conciliación de pagos, facturación electrónica SUNAT y bloqueo automático de despacho. (M1, M4)
+P4
+Laboratorio y servicio técnico sin visibilidad de capacidad
+El programa de calibración y la asignación de técnicos son manuales; no se conoce la carga por técnico ni por magnitud.
+Cuellos de botella; incumplimiento del plazo ofrecido en la proforma; asignaciones desbalanceadas.
+Planificador con calendario por técnico y magnitud y tiempos estándar por servicio. (M2)
+P5
+Certificados e informes con transcripción y recálculo manual
+Las notas de calibración se transcriben al certificado y se revisan registro por registro; las plantillas están fuera del sistema.
+Reprocesos; salidas no conformes; riesgo sobre la validez de los resultados.
+Captura estructurada de resultados con cálculo automático; revisión, aprobación y firma electrónica antes de liberar. (M2, M5)
+P6
+Equipos del cliente en custodia sin trazabilidad de ubicación
+El equipo pasa por recepción, laboratorio o servicio técnico y despacho con registros firmados en papel; no hay estado en línea.
+Demora para ubicar equipos; riesgo de extravío o entrega errada; consultas repetidas del cliente.
+Registro por N° de serie o código PROMECAL con ubicación, estado y actas digitales. (M3)
+P7
+Repuestos e insumos sin control de stock (inferido)
+No existe registro de inventario ni un proceso formal de compras vinculado a las órdenes de reparación.
+Compras urgentes; reparaciones detenidas por falta de repuestos; costos no imputados a la orden.
+Inventario de repuestos con stock mínimo y compras vinculadas a la orden de trabajo; costeo por orden. (M3, M4)
+P8
+Patrones de referencia y competencias técnicas sin sistematizar (inferido)
+Los vencimientos de calibración de los patrones y las autorizaciones de los técnicos se controlan fuera del sistema.
+Riesgo de emitir certificados con patrones vencidos o por personal no autorizado; observaciones en auditorías.
+Calendario de recalibración de patrones con bloqueo de uso al vencer y matriz de competencias por magnitud. (M5)
+P9
+Garantías sin flujo definido
+El procedimiento no precisa si se genera nota de pedido ni cómo se registra la cobertura.
+Criterios inconsistentes; servicios en garantía sin registro ni costo controlado.
+Validación automática de vigencia de garantía y nota de pedido tipo "Garantía" con monto cero. (M1, M2)
+
+6.1.1. Síntesis de la solución: módulos del ERP
+Módulo
+Funcionalidades principales
+Problemas que atiende
+Base documental
+M1 · Gestión Comercial (CRM y Ventas)
+Maestro de clientes; solicitudes multicanal; proformas y condiciones; orden de compra del cliente; nota de pedido; línea de crédito; garantías.
+P1, P2, P3, P9
+Alta: flujo de actividades; CUS-01 y 12–15
+M2 · Operaciones de Servicio
+Orden de servicio y orden de trabajo; programa de calibración; asignación por técnico y magnitud; diagnóstico; registro de resultados; certificados, informes de verificación, diagnóstico y reparación.
+P1, P2, P4, P5, P9
+Alta: flujo de actividades; CUS-04–11
+M3 · Logística, Inventario y Compras
+Recepción y despacho (guía, F01, actas); equipos en custodia por serie y ubicación; repuestos e insumos; proveedores y órdenes de compra.
+P1, P2, P6, P7
+Media: RYD-PR-01; repuestos y compras como supuesto
+M4 · Finanzas y Facturación
+Facturación electrónica SUNAT; cuentas por cobrar; conciliación de pagos; cobranza; bloqueo de despacho; costeo por servicio; integración contable.
+P1, P3, P7
+Baja-media: crédito y pago documentados; resto como supuesto
+M5 · Calidad, Metrología y Competencias
+Patrones de referencia y recalibraciones; no conformidades y acciones correctivas; control documentario; competencias y autorizaciones de técnicos.
+P1, P5, P8
+Media: CAL-PR-06, F01-SIG-PR-05; detalle como supuesto
+
+La integración entre módulos sigue el ciclo de vida de una orden: Comercial genera la nota de pedido, Logística recibe el equipo, Operaciones ejecuta el servicio, Calidad libera el certificado, Finanzas factura y confirma el pago, y Logística despacha. Todos los módulos operan sobre la misma base de datos.
+
+Figura 2. Integración de los módulos del ERP en el ciclo de una orden de servicio.
+
+6.2. Diagrama de Ishikawa (espina de pescado)
+El diagrama organiza las causas del problema central según las 6M. El efecto analizado es: "Demoras, errores y baja trazabilidad en la atención de los servicios de calibración y soporte técnico de PROMECAL".
+
+Figura 3. Diagrama de Ishikawa del problema central (elaboración propia).
+
+Tabla resumen de causas por categoría
+Categoría
+Causas identificadas
+Problemas relacionados
+Módulo ERP
+Métodos
+Coordinación entre áreas por correo; crédito evaluado caso por caso; flujo de garantías no definido.
+P2, P3, P9
+M1, M4
+Mano de obra
+El Ejecutivo de Ventas concentra toda la comunicación; re-digitación de datos entre áreas; asignación de técnicos a criterio.
+P1, P2, P4
+M1, M2
+Máquinas / Sistemas
+Sistema actual limitado a ventas; laboratorio, despacho y finanzas sin integración; facturación electrónica aislada.
+P1, P3
+M1–M5
+Medición
+Sin indicadores de tiempo de atención; recálculo manual de resultados; sin control de carga del laboratorio.
+P4, P5
+M2, M5
+Materiales
+Repuestos sin control de stock; patrones sin calendario de recalibración; registros en papel y firmas físicas.
+P6, P7, P8
+M3, M5
+Medio / Entorno
+Solicitudes por múltiples canales; clientes sin orden de compra; exigencias de trazabilidad metrológica.
+P2, P3, P8
+M1, M5
+
+Conclusión del diagnóstico. Las causas convergen en una raíz común: la ausencia de un sistema integrado que soporte procesos estandarizados de punta a punta. Las categorías de Métodos y Máquinas/Sistemas concentran la mayor parte de las causas y afectan a todos los problemas identificados, por lo que una solución que solo digitalice la atención de pedidos (como las versiones previas del SAP) resulta insuficiente. Un ERP de cinco módulos sobre una base de datos única atiende la totalidad de los problemas P1–P9 y sienta las bases para medir y mejorar el desempeño del laboratorio y del servicio técnico.

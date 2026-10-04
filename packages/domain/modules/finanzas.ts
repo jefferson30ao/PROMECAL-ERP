@@ -1,0 +1,78 @@
+import type { Resource } from "../types";
+import { f, client, order, amount, date, detail, magnitude } from "../fields";
+export const finanzasResources: Resource[] = [
+  {
+    key: "invoices",
+    module: "finanzas",
+    title: "Facturación",
+    singular: "factura",
+    prefix: "FAC",
+    description: "Comprobantes de demostración. Conexión con SUNAT pendiente.",
+    columns: ["name", "clientId", "orderId", "amount", "status"],
+    states: ["Borrador", "Pendiente", "Pagada"],
+    fields: [
+      f("name", "Serie y número interno"),
+      client,
+      order,
+      amount,
+      f("due", "Vencimiento", "date"),
+      detail,
+    ],
+  },
+  {
+    key: "payments",
+    module: "finanzas",
+    title: "Pagos y conciliación",
+    singular: "pago",
+    prefix: "PAG",
+    description: "Contrasta la evidencia de pago antes de confirmar el abono.",
+    columns: ["name", "orderId", "amount", "date", "status"],
+    states: ["Por conciliar", "Confirmado", "Observado"],
+    fields: [
+      f("name", "N.º operación / referencia de evidencia"),
+      order,
+      amount,
+      f("method", "Medio", "select", {
+        options: ["Transferencia", "Depósito", "Efectivo"],
+      }),
+      date,
+      detail,
+    ],
+  },
+  {
+    key: "collections",
+    module: "finanzas",
+    title: "Gestiones de cobranza",
+    singular: "gestión de cobranza",
+    prefix: "COB",
+    description: "Compromisos y próximos contactos para recuperar saldos.",
+    columns: ["name", "clientId", "orderId", "due", "status"],
+    states: ["Pendiente", "Contactado", "Resuelto"],
+    fields: [
+      f("name", "Acción de seguimiento"),
+      client,
+      order,
+      f("due", "Próximo contacto", "date"),
+      detail,
+    ],
+  },
+  {
+    key: "costs",
+    module: "finanzas",
+    title: "Costeo por servicio",
+    singular: "costo",
+    prefix: "COS",
+    description: "Imputación de mano de obra, repuestos y servicios externos.",
+    columns: ["name", "orderId", "category", "amount", "date"],
+    fields: [
+      f("name", "Concepto"),
+      order,
+      f("category", "Categoría", "select", {
+        options: ["Mano de obra", "Repuesto", "Servicio externo", "Otros"],
+      }),
+      amount,
+      date,
+      detail,
+    ],
+  },
+];
